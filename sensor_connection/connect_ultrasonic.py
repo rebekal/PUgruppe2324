@@ -27,7 +27,7 @@ def measureDistance():
 
 	distance = pulse_duration * 17150
 
-	distance = round(distance, 2)
+	distance = round(distance, 2) // i cm
 	GPIO.cleanup()
 	return distance
 
