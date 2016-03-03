@@ -37,10 +37,10 @@ public class Main extends Application implements BaseInterface, Initializable {
 	}
 	
 	/*
-	 * Tørr asfalt: 0,9
-	 * Våt asfalt: 0,6
-	 * Snø: 0,3
-	 * Våt is: 0,15
+	 * Torr asfalt: 0,9
+	 * Vaatt asfalt: 0,6
+	 * Sno�: 0,3
+	 * Vaatt is: 0,15
 	 */
 	private void createWeatherFrictionLookUpTable() {
 		weatherFrictionTable = new HashMap<String, Double>();
