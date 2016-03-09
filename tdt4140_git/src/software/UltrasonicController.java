@@ -40,9 +40,9 @@ public class UltrasonicController implements BaseInterface {
 	}
 	
 //	(hastighet * hastighet) / (2 * friksjon * gravitasjon)
-	public boolean isThreeSecondRuleOK(double carSpeed, double weatherValue, double temperature) {
+	public boolean isDistanceToCarInfrontOK(double carSpeed, double frictionValue, double temperature) {
 		Double value = sensors.get(FRONT).getValue();
-		return (value != null) ? ((Math.pow(carSpeed, 2)) / (2 * weatherValue * 9.81) < value) : false;
+		return (value != null) ? ((Math.pow(carSpeed, 2)) / (2 * frictionValue * 9.81) < value) : false;
 	}
 	
 	public boolean isParkingSpaceOK() {
@@ -51,11 +51,8 @@ public class UltrasonicController implements BaseInterface {
 	}
 	
 	public boolean noObjectInBlindZone(String sensor) {
-		if (!sensor.equals(LEFT) && !sensor.equals(RIGHT)) {
-			warning(INPUT, null);
-		}
 		Double value = sensors.get(sensor).getValue();
-		return (value != null) ? (value < BLIND_ZONE) : false;
+		return (value != null && (sensor.equals(LEFT) || sensor.equals(RIGHT))) ? (value < BLIND_ZONE) : false;
 	}
 	
 //	Testing

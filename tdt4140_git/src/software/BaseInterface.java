@@ -11,7 +11,7 @@ public interface BaseInterface {
 //	Info
 	public final String INPUT = "input", SENSOR = "sensor";
 	
-//	Weather
-	public final String SUN = "sun", RAIN = "rain", SNOW = "snow", ICE = "ice";
+//	Weather, road conditions
+	public final String DRY_ASPHALT = "sun", WET_ASPHALT = "rain", SNOW = "snow", ICE = "ice";
 
 }

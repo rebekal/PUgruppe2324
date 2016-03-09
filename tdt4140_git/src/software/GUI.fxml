@@ -32,12 +32,12 @@
             <Font size="25.0" />
          </font>
       </Label>
-      <Label fx:id="leftBlindZone" layoutX="114.0" layoutY="450.0" text="Blind zone" textFill="WHITE">
+      <Label fx:id="leftBlindZone" layoutX="114.0" layoutY="450.0" text="Blind zone" textFill="RED">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <Label fx:id="rightBlindZone" layoutX="568.0" layoutY="450.0" text="Blind zone" textFill="WHITE">
+      <Label fx:id="rightBlindZone" layoutX="568.0" layoutY="450.0" text="Blind zone" textFill="RED">
          <font>
             <Font size="25.0" />
          </font>

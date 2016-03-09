@@ -9,11 +9,11 @@ public abstract class Sensor {
 	
 	protected GpioController gpc;
 	
-	public Sensor(String sensorName, String pin1, String pin2) {
+	public Sensor(String sensorName, GpioController gpc, String pin1, String pin2) {
 		this.sensorName = sensorName;
 		this.pin1 = pin1;
 		this.pin2 = pin2;
-		gpc = GpioFactory.getInstance();
+		this.gpc = gpc;
 	}
 	
 	protected abstract void setup();

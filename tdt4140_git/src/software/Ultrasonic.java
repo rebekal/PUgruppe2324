@@ -1,7 +1,9 @@
 package software;
 
+import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
 public class Ultrasonic extends Sensor {
@@ -11,8 +13,8 @@ public class Ultrasonic extends Sensor {
 	
 	private Double value;
 	
-	public Ultrasonic(String sensorName, String triggerPin, String echoPin) {
-		super(sensorName, triggerPin, echoPin);
+	public Ultrasonic(String sensorName, GpioController gpc, String triggerPin, String echoPin) {
+		super(sensorName, gpc, triggerPin, echoPin);
 		setup();
 	}
 	
@@ -47,48 +49,37 @@ public class Ultrasonic extends Sensor {
 	}
 	
 	public void update() {
-		sendActivePulse();
-		
-		double readValue = 0; // ecPin ***
-		
-		double signalOffStart = System.currentTimeMillis();
-		double signalOff = signalOffStart;
-		
-		while (readValue == 0 && ((signalOff - signalOffStart) < 0.5)) {
-//			readValue
-			signalOff = System.currentTimeMillis();
-		}
-		double signalOn = signalOff;
-		
-		while (readValue == 1) {
-//			readValue
-			signalOn = System.currentTimeMillis();
-		}
-		value = calculateDistance(signalOn, signalOff);
-	}
-
-	private void sendActivePulse() {
 		try {
-			trigPin.low();
-			Thread.sleep(300);
-			
+//			Sending a active pulse
 			trigPin.high();
-			Thread.sleep(10);
-			
-			trigPin.low();
-			
+			Thread.sleep(20);
 		} catch (InterruptedException e) {
-			System.out.println("Interrupted exception");
+			System.out.println("InterruptedExeption - ultrasonic update");
+		}
+		
+		trigPin.low();
+//		Waiting for the result
+		
+		double startTime = System.currentTimeMillis(), stopTime = 0;
+		do {
+			stopTime = System.currentTimeMillis();
+			if ((System.currentTimeMillis() - startTime) >= 40) {
+				break;
+			}
+		} while (ecPin.getState() != PinState.HIGH);
+		
+		/*
+		 * Calculates the distance.
+		 * If the loop stopped after 38ms set the result to null,
+		 * indicating that the update times out
+		 */
+		if ((stopTime - startTime) <= 38) {
+			value = (stopTime - startTime) * 165.7;
+		}
+		else {
+			System.out.println("Timed out");
+			value = null;
 		}
 	}
-	
-	private Double calculateDistance(double signalOn, double signalOff) {
-		return (344 * (signalOn - signalOff) * 100 ) / 2;
-	}
-
-
-	
-
-	
 	
 }

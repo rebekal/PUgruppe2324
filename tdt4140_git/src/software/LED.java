@@ -1,5 +1,6 @@
 package software;
 
+import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.RaspiPin;
 
@@ -7,8 +8,8 @@ public class LED extends Sensor {
 	
 	private GpioPinDigitalOutput anode;
 	
-	public LED(String LEDName, String pinNumber) {
-		super(LEDName, pinNumber, null);
+	public LED(String LEDName, GpioController gpc, String pinNumber) {
+		super(LEDName, gpc, pinNumber, null);
 		setup();
 	}
 

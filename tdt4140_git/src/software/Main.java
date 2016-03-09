@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +26,7 @@ public class Main extends Application implements BaseInterface, Initializable {
 	
 	private Map<String, Double> weatherFrictionTable;
 
+	private GpioController gpc;
 	private UltrasonicController uc;
 	private LEDController lc;
 	
@@ -37,15 +41,16 @@ public class Main extends Application implements BaseInterface, Initializable {
 	}
 	
 	/*
-	 * Tørr asfalt: 0,9
-	 * Våt asfalt: 0,6
+	 * > VG verdier:  		(Fysikk tabell)
+	 * Tørr asfalt: 0,9		(0.4 - 1.0)
+	 * Våt asfalt: 0,6		(0.05 - 0.9)
 	 * Snø: 0,3
 	 * Våt is: 0,15
 	 */
 	private void createWeatherFrictionLookUpTable() {
 		weatherFrictionTable = new HashMap<String, Double>();
-		weatherFrictionTable.put(SUN, 0.9);				// 0.4 - 1.0
-		weatherFrictionTable.put(RAIN, 0.05);			// 0.05 - 0.9
+		weatherFrictionTable.put(DRY_ASPHALT, 0.9);
+		weatherFrictionTable.put(WET_ASPHALT, 0.05);
 		weatherFrictionTable.put(SNOW, 0.3);
 		weatherFrictionTable.put(ICE, 0.02);
 	}
@@ -55,20 +60,23 @@ public class Main extends Application implements BaseInterface, Initializable {
 	}
 	
 	public void init() {
+//		Raspberry pi, GpioController
+		gpc = GpioFactory.getInstance();
+		
 //		Ultrasonic
 		Map<String, Ultrasonic> sensors = new HashMap<String, Ultrasonic>();
-		sensors.put(FRONT, new Ultrasonic(FRONT, "5", "6"));
-		sensors.put(LEFT, new Ultrasonic(LEFT, "7", "8"));
-		sensors.put(RIGHT, new Ultrasonic(RIGHT, "9", "10"));
-		sensors.put(BEHIND, new Ultrasonic(BEHIND, "11", "12"));
+		sensors.put(FRONT, new Ultrasonic(FRONT, gpc, "5", "6"));
+		sensors.put(LEFT, new Ultrasonic(LEFT, gpc, "7", "8"));
+		sensors.put(RIGHT, new Ultrasonic(RIGHT, gpc, "9", "10"));
+		sensors.put(BEHIND, new Ultrasonic(BEHIND, gpc, "11", "12"));
 //		keyEqualsSensorName(sensors)
 		uc = new UltrasonicController(sensors, doorLength, SENSOR_MAX_DISTANCE, BLIND_ZONE);
 		
 //		LED
 		Map<String, LED> LEDs = new HashMap<String, LED>();
-		LEDs.put(RED, new LED(RED, "1"));
-		LEDs.put(YELLOW, new LED(YELLOW, "2"));
-		LEDs.put(GREEN, new LED(GREEN, "3"));
+		LEDs.put(RED, new LED(RED, gpc, "1"));
+		LEDs.put(YELLOW, new LED(YELLOW, gpc, "2"));
+		LEDs.put(GREEN, new LED(GREEN, gpc, "3"));
 //		keyEqualsSensorName(LEDs)
 		lc = new LEDController(LEDs);
 	}
@@ -97,8 +105,8 @@ public class Main extends Application implements BaseInterface, Initializable {
 		return 0;
 	}
 	
-	private double getWeatherValue(String weather) {
-		return weatherFrictionTable.get(weather);
+	private double getFrictionValue(String weatherRoadCondition) {
+		return weatherFrictionTable.get(weatherRoadCondition);
 	}
 	
 	private double getTemperature() {
@@ -121,7 +129,7 @@ public class Main extends Application implements BaseInterface, Initializable {
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
+		System.out.println("Init");
 	}
 	
 	@FXML
@@ -170,7 +178,7 @@ public class Main extends Application implements BaseInterface, Initializable {
 	
 	public static void main(String[] args) {
 		Main main = new Main(210.5, 500.0, 200.0);
-		main.init();
+//		main.init();
 //		main.run();
 		launch(args);
 	}
