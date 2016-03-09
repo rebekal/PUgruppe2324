@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="software.Main">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#000c17" height="720.0" stroke="BLACK" strokeType="INSIDE" width="1200.0" />
+      <Button fx:id="drivingButton" layoutX="853.0" layoutY="120.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="Driving mode" AnchorPane.bottomAnchor="450.0" AnchorPane.leftAnchor="853.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="120.0">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Button>
+      <Button fx:id="parkingButton" layoutX="853.0" layoutY="450.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="Parking mode" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="853.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="450.0">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Button>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#36404a" height="720.0" stroke="BLACK" strokeType="INSIDE" width="808.0" />
+      <ImageView fitHeight="367.0" fitWidth="262.0" layoutX="312.0" layoutY="177.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../Dropbox/NTNU/4.%20Semester/Programvareutvikling/red-car-top-view-hi.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="distanceFront" layoutX="326.0" layoutY="45.0" text="Distance front" textFill="WHITE">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="leftBlindZone" layoutX="114.0" layoutY="450.0" text="Blind zone" textFill="RED">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="rightBlindZone" layoutX="568.0" layoutY="450.0" text="Blind zone" textFill="RED">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="distanceBehind" layoutX="316.0" layoutY="563.0" text="Distance behind" textFill="WHITE">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentFrontDistance" layoutX="314.0" layoutY="94.0" text="Current distance">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentDistanceBehind" layoutX="314.0" layoutY="611.0" text="Current distance">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="leftCar" fitHeight="375.0" fitWidth="178.0" layoutX="83.0" layoutY="515.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../Dropbox/NTNU/4.%20Semester/Programvareutvikling/SimpleTurquoiseCarTopView.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="rightCar" fitHeight="375.0" fitWidth="178.0" layoutX="537.0" layoutY="515.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../Dropbox/NTNU/4.%20Semester/Programvareutvikling/SimpleTurquoiseCarTopView.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="distanceLeft" layoutX="104.0" layoutY="270.0" text="Distance left" textFill="WHITE">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="distanceRight" layoutX="549.0" layoutY="270.0" text="Distance right" textFill="WHITE">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentLeftDistance" layoutX="82.0" layoutY="324.0" text="Current distance">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentRightDistance" layoutX="536.0" layoutY="324.0" text="Current distance">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <Button fx:id="sunButton" layoutX="853.0" layoutY="294.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="60.0" text="Sun" AnchorPane.rightAnchor="287.0" />
+      <Button fx:id="rainButton" layoutX="932.0" layoutY="294.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="60.0" text="Rain" />
+      <Button fx:id="snowButton" layoutX="1015.0" layoutY="294.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="60.0" text="Snow" />
+      <Button fx:id="iceButton" layoutX="1093.0" layoutY="294.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="60.0" text="Ice" />
+   </children>
+</AnchorPane>
