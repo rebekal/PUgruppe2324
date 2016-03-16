@@ -39,8 +39,10 @@ public class Ultrasonic extends Sensor {
 		return "EchoPin";
 	}
 
-	public Double getValue() {
-		update();
+	public Double getValue(boolean update) {
+		if (update) {
+			update();			
+		}
 		return value;
 	}
 	
