@@ -39,9 +39,9 @@ public class UltrasonicController implements BaseInterface {
 		}
 	}
 	
-	public boolean isDistanceToCarInfrontOK(double currentDistance) {
+	public boolean isDistanceToCarInfrontOK(double brakeDistance) {
 		Double value = getSensorValue(FRONT, true);
-		return (value != null) ? currentDistance < value : false;
+		return (value != null) ? brakeDistance < value : false;
 	}
 	
 	public boolean isParkingSpaceOK() {
