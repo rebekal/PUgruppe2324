@@ -17,5 +17,8 @@ public interface BaseInterface {
 	
 //	Weather, road conditions
 	public final String DRY_ASPHALT = "dry asphalt", WET_ASPHALT = "wet asphalt", SNOW = "snow", ICE = "ice";
-
+	
+// Modes
+	public final String PARKING = "parking", DRIVING = "Driving";
+	
 }
