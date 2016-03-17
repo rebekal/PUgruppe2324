@@ -1,7 +1,10 @@
 package software;
 
+
 import java.util.HashMap;
 import java.util.Map;
+
+import software.GUIController2;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -16,9 +19,20 @@ public class Main implements BaseInterface {
 	private GpioController gpc;
 	private UltrasonicController ultrac;
 	private LEDController ledc;
-	private static GUIController guic;
 	
-	public Main(double doorLength, double rearDoorLength, double SENSOR_MAX_DISTANCE, double BLIND_ZONE) {
+	private String mode;
+	private String weather;
+	private GUIController2 guicont;
+	
+	public void setMode(String mode){
+		this.mode = mode;
+	}
+	
+	public void setWeather(String weather){
+		this.weather = weather;
+	}
+	
+	public Main(double doorLength, double rearDoorLength, double SENSOR_MAX_DISTANCE, double BLIND_ZONE, GUIController2 guic) {
 		if (! isValidFixedDistances(doorLength, rearDoorLength, SENSOR_MAX_DISTANCE, BLIND_ZONE)) {
 			throw new IllegalArgumentException("Fixed value(s) not valid");
 		}
@@ -28,14 +42,15 @@ public class Main implements BaseInterface {
 		this.BLIND_ZONE = BLIND_ZONE;
 		weatherFrictionTable = new HashMap<String, Double>();
 		insertWeatherFrictionValuesIntoLookUpTable();
+		this.guicont = guic;
 	}
 	
 	/*
 	 * > VG verdier:  		(Fysikk tabell)
-	 * Tørr asfalt: 0,9		(0.4 - 1.0)
-	 * Våt asfalt: 0,6		(0.05 - 0.9)
-	 * Snø: 0,3
-	 * Våt is: 0,15
+	 * Tï¿½rr asfalt: 0,9		(0.4 - 1.0)
+	 * Vï¿½t asfalt: 0,6		(0.05 - 0.9)
+	 * Snï¿½: 0,3
+	 * Vï¿½t is: 0,15
 	 */
 	private void insertWeatherFrictionValuesIntoLookUpTable() {
 		weatherFrictionTable.put(DRY_ASPHALT, 0.9);
@@ -51,9 +66,7 @@ public class Main implements BaseInterface {
 	public void init() {
 //		Raspberry pi, GpioController
 		gpc = GpioFactory.getInstance();
-		
-//		GUI Controller
-		guic = new GUIController(this);
+
 		
 //		Ultrasonic Controller
 		Map<String, Ultrasonic> sensors = new HashMap<String, Ultrasonic>();
@@ -83,42 +96,23 @@ public class Main implements BaseInterface {
 
 	public void run() {
 		System.out.println("Program start");
-		double brakeDistance;
 		
 		while (engineOn()) {
-			if (! guic.getDrivingButton().isDisabled()) {
-				brakeDistance = brakeDistance(getCarSpeed(), getFrictionValue(), getReactionTime());
-				guic.updateDistanceLabelColor(guic.getDistanceFrontLabel(), brakeDistance, ultrac.getSensorValue(FRONT, true));
-				if (ultrac.isDistanceToCarInfrontOK(brakeDistance)) {
-					ledc.ledOff(RED_FRONT);					
-				}
-				else {
-					System.out.println("Test: you are too close to the vehicle ahead! Distance: " + ultrac.getSensorValue(FRONT, false));
-					ledc.ledOn(RED_FRONT);
-				}
-				
-				if (ultrac.noObjectInBlindZone(LEFT)) {
-					ledc.ledOff(RED_LEFT);
-				}
-				else {
-					System.out.println("Test: object in left blind zone!");
-					ledc.ledOn(RED_LEFT);
-				}
-				
-				if (ultrac.noObjectInBlindZone(RIGHT)) {
-					ledc.ledOff(RED_RIGHT);
-				}
-				else {
-					System.out.println("Test: object in right blind zone!");
-					ledc.ledOn(RED_RIGHT);
-				}
-				
+			if (mode == "Driving") {
+				double frontDist = ultrac.getSensorValue(FRONT, true);
+				boolean leftBlind= ! ultrac.noObjectInBlindZone(LEFT);
+				boolean rightBlind = ! ultrac.noObjectInBlindZone(RIGHT);
+				guicont.setCurrentFrontDistance(frontDist);
+				guicont.setLeftBlindZone(leftBlind);
+				guicont.setRightBlindZone(rightBlind);
 			}
-			else if (! guic.getParkingButton().isDisabled()) {
-				if (! ultrac.isParkingSpaceOK()) {
-					System.out.println("Test: parking space not sufficient! Leftside: "
-							+ ultrac.getSensorValue(LEFT, false) + ", Rightside: " + ultrac.getSensorValue(RIGHT, false) + ", Behind: " + ultrac.getSensorValue(REAR, false));
-				}
+			else if (mode == "Parking") {
+				double leftDist = ultrac.getSensorValue(LEFT, true);
+				double rightDist = ultrac.getSensorValue(RIGHT, true);
+				double behindDist = ultrac.getSensorValue(REAR, true);
+				guicont.setCurrentLeftDistance(leftDist);
+				guicont.setCurrentRightDistance(rightDist);
+				guicont.setCurrentDistanceBehind(behindDist);
 			}
 		}
 		System.out.println("Program shutdown");
@@ -157,17 +151,11 @@ public class Main implements BaseInterface {
 	 *  - where velocity is measured in meter/second
 	 *  - gravity = 9.81m/s^2
 	 */
-	public double brakeDistance(double carSpeed, double frictionValue, double reactionTime) {
-		return Math.pow(carSpeed, 2) / (2 * frictionValue * 9.81) + carSpeed * reactionTime;
+	public double brakeDistance() {
+		return Math.pow(getCarSpeed(), 2) / (2 * getFrictionValue() * 9.81) + getCarSpeed() * getReactionTime();
 	}
 	
 //	*** Car data ***
-	
-	public static void main(String[] args) {
-		Main main = new Main(210.5, 155.5, 500.0, 200.0);
-//		main.init();
-//		main.run();
-		guic.launch(args);
-	}
+
 
 }

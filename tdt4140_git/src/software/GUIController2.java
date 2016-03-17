@@ -4,13 +4,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
-import software.Car;
 import javafx.event.ActionEvent;
 import javafx.scene.image.ImageView;
 
-public class GUIController2 {
+public class GUIController2 implements BaseInterface{
 
-	private Car model;
+	private Main model;
 	
 	@FXML Label leftBlindZone;
 	@FXML Label rightBlindZone;
@@ -33,7 +32,7 @@ public class GUIController2 {
 
 	
 	public void initialize() {
-		model = new Car(this);
+		model = new Main(1,1,2,3,this);
 	}
 
 
@@ -52,7 +51,7 @@ public class GUIController2 {
 		rainButton.setVisible(false);
 		snowButton.setVisible(false);
 		iceButton.setVisible(false);
-		model.setMode("Parking");
+		model.setMode(PARKING);
 	}
 
 
@@ -71,27 +70,27 @@ public class GUIController2 {
 		rainButton.setVisible(true);
 		snowButton.setVisible(true);
 		iceButton.setVisible(true);
-		model.setMode("Driving");
+		model.setMode(DRIVING);
 	}
 
 
 	@FXML public void sunButtonPressed(ActionEvent event) {
-		model.setWeather("Sun");
+		model.setWeather(DRY_ASPHALT);
 	}
 
 
 	@FXML public void snowButtonPressed(ActionEvent event) {
-		model.setWeather("Snow");
+		model.setWeather(SNOW);
 	}
 
 
 	@FXML public void rainButtonPressed(ActionEvent event) {
-		model.setWeather("Rain");
+		model.setWeather(WET_ASPHALT);
 	}
 
 
 	@FXML public void iceButtonPressed(ActionEvent event) {
-		model.setWeather("Ice");
+		model.setWeather(ICE);
 	}
 
 	public void setLeftBlindZone(Boolean leftBlindZone) {
@@ -117,9 +116,14 @@ public class GUIController2 {
 		this.updateDistanceLabelColor(currentRightDistance, rightDistance);
 	}
 	
+	public void setCurrentDistanceBehind(Double behindDistance) {
+		this.currentDistanceBehind.setText(String.valueOf(behindDistance));
+		this.updateDistanceLabelColor(currentDistanceBehind, behindDistance);
+	}
+	
 	
 	public void updateDistanceLabelColor(Label label, double currentDistance) {
-		validDistance = model.getValidDistance();
+		double validDistance = model.brakeDistance();
 		if (currentDistance < validDistance) {
 			label.setTextFill(Color.RED);
 		}
@@ -130,5 +134,6 @@ public class GUIController2 {
 			label.setTextFill(Color.GREEN);
 		}
 	}
+
 	
 }

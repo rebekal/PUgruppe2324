@@ -11,22 +11,17 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="software.GUIController2">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#000c17" height="720.0" stroke="BLACK" strokeType="INSIDE" width="1200.0" />
-      <Button fx:id="drivingButton" onAction="#drivingButtonPressed" layoutX="853.0" layoutY="120.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="Driving mode" AnchorPane.bottomAnchor="450.0" AnchorPane.leftAnchor="853.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="120.0">
+      <Button fx:id="drivingButton" layoutX="853.0" layoutY="120.0" mnemonicParsing="false" onAction="#drivingButtonPressed" prefHeight="150.0" prefWidth="300.0" text="Driving mode" AnchorPane.bottomAnchor="450.0" AnchorPane.leftAnchor="853.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="120.0">
          <font>
             <Font size="40.0" />
          </font>
       </Button>
-      <Button fx:id="parkingButton" onAction="#parkingButtonPressed" layoutX="853.0" layoutY="450.0" mnemonicParsing="false" prefHeight="150.0" prefWidth="300.0" text="Parking mode" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="853.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="450.0">
+      <Button fx:id="parkingButton" layoutX="853.0" layoutY="450.0" mnemonicParsing="false" onAction="#parkingButtonPressed" prefHeight="150.0" prefWidth="300.0" text="Parking mode" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="853.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="450.0">
          <font>
             <Font size="40.0" />
          </font>
       </Button>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#36404a" height="720.0" stroke="BLACK" strokeType="INSIDE" width="808.0" />
-      <ImageView fitHeight="367.0" fitWidth="262.0" layoutX="312.0" layoutY="177.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../../../../../Dropbox/NTNU/4.%20Semester/Programvareutvikling/red-car-top-view-hi.png" />
-         </image>
-      </ImageView>
       <Label fx:id="distanceFront" layoutX="326.0" layoutY="45.0" text="Distance front" textFill="WHITE">
          <font>
             <Font size="25.0" />
@@ -47,16 +42,6 @@
             <Font size="25.0" />
          </font>
       </Label>
-      <ImageView fx:id="leftCar" fitHeight="375.0" fitWidth="178.0" layoutX="83.0" layoutY="515.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../../../../../Dropbox/NTNU/4.%20Semester/Programvareutvikling/SimpleTurquoiseCarTopView.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="rightCar" fitHeight="375.0" fitWidth="178.0" layoutX="537.0" layoutY="515.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../../../../../Dropbox/NTNU/4.%20Semester/Programvareutvikling/SimpleTurquoiseCarTopView.png" />
-         </image>
-      </ImageView>
       <Label fx:id="distanceLeft" layoutX="104.0" layoutY="270.0" text="Distance left" textFill="WHITE">
          <font>
             <Font size="25.0" />
@@ -77,9 +62,24 @@
             <Font size="25.0" />
          </font>
       </Label>
-      <Button fx:id="sunButton" onAction="#sunButtonPressed" layoutX="853.0" layoutY="294.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="60.0" text="Sun" AnchorPane.rightAnchor="287.0" />
-      <Button fx:id="rainButton" onAction="#rainButtonPressed" layoutX="932.0" layoutY="294.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="60.0" text="Rain" />
-      <Button fx:id="snowButton" onAction="#snowButtonPressed" layoutX="1015.0" layoutY="294.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="60.0" text="Snow" />
-      <Button fx:id="iceButton" onAction="#iceButtonPressed" layoutX="1093.0" layoutY="294.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="60.0" text="Ice" />
+      <Button fx:id="sunButton" layoutX="853.0" layoutY="294.0" mnemonicParsing="false" onAction="#sunButtonPressed" prefHeight="61.0" prefWidth="60.0" text="Sun" AnchorPane.rightAnchor="287.0" />
+      <Button fx:id="rainButton" layoutX="932.0" layoutY="294.0" mnemonicParsing="false" onAction="#rainButtonPressed" prefHeight="61.0" prefWidth="60.0" text="Rain" />
+      <Button fx:id="snowButton" layoutX="1015.0" layoutY="294.0" mnemonicParsing="false" onAction="#snowButtonPressed" prefHeight="61.0" prefWidth="60.0" text="Snow" />
+      <ImageView fitHeight="367.0" fitWidth="262.0" layoutX="312.0" layoutY="177.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../Dropbox/NTNU/4.%20Semester/Programvareutvikling/red-car-top-view-hi.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="rightCar" fitHeight="375.0" fitWidth="178.0" layoutX="600.0" layoutY="359.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@SimpleTurquoiseCarTopView.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="leftCar" fitHeight="375.0" fitWidth="178.0" layoutX="82.0" layoutY="360.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@red-car-top-view-hi.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="iceButton" layoutX="1093.0" layoutY="294.0" mnemonicParsing="false" onAction="#iceButtonPressed" prefHeight="61.0" prefWidth="60.0" text="Ice" />
    </children>
 </AnchorPane>
