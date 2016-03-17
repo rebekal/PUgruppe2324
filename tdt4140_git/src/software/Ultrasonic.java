@@ -15,7 +15,6 @@ public class Ultrasonic extends Sensor {
 	
 	public Ultrasonic(String sensorName, GpioController gpc, String triggerPin, String echoPin) {
 		super(sensorName, gpc, triggerPin, echoPin);
-		setup();
 	}
 	
 	@Override

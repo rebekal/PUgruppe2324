@@ -14,6 +14,7 @@ public abstract class Sensor {
 		this.pin1 = pin1;
 		this.pin2 = pin2;
 		this.gpc = gpc;
+		setup();
 	}
 	
 	protected abstract void setup();

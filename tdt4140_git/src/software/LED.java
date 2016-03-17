@@ -7,17 +7,15 @@ import com.pi4j.io.gpio.RaspiPin;
 public class LED extends Sensor {
 	
 	private GpioPinDigitalOutput anode;
-	private boolean isHigh;
+	private boolean lightOn;
 	
 	public LED(String LEDName, GpioController gpc, String pinNumber) {
 		super(LEDName, gpc, pinNumber, null);
-		setup();
 	}
 
 	@Override
 	protected void setup() {
 		anode = gpc.provisionDigitalOutputPin(RaspiPin.getPinByName(pin1));
-		setLow();
 	}
 
 	@Override
@@ -35,23 +33,23 @@ public class LED extends Sensor {
 		return "Cathode (ground)";
 	}
 	
-	public boolean isHigh() {
-		return isHigh;
+	public boolean lightOn() {
+		return lightOn;
 	}
 	
 	public void toggle() {
 		anode.toggle();
-		isHigh = ! isHigh;
+		lightOn = ! lightOn;
 	}
 	
 	public void setLow() {
 		anode.low();
-		isHigh = false;
+		lightOn = false;
 	}
 	
 	public void setHigh() {
 		anode.high();
-		isHigh = true;
+		lightOn = true;
 	}
 
 }

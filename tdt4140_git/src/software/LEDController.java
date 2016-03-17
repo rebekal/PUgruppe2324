@@ -15,13 +15,13 @@ public class LEDController implements BaseInterface {
 	}
 	
 	public void ledOff(String led) {
-		if (LEDs.get(led).isHigh()) {
+		if (LEDs.get(led).lightOn()) {
 			LEDs.get(led).setLow();			
 		}
 	}
 	
 	public void ledOn(String led) {
-		if (! LEDs.get(led).isHigh()) {
+		if (! LEDs.get(led).lightOn()) {
 			LEDs.get(led).setHigh();			
 		}
 	}

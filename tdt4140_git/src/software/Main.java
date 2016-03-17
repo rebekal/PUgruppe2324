@@ -88,7 +88,7 @@ public class Main implements BaseInterface {
 		while (engineOn()) {
 			if (! guic.getDrivingButton().isDisabled()) {
 				brakeDistance = brakeDistance(getCarSpeed(), getFrictionValue(), getReactionTime());
-				guic.updateDistanceLabelColor(guic.getDistanceFront(), brakeDistance ,ultrac.getSensorValue(FRONT, false));
+				guic.updateDistanceLabelColor(guic.getDistanceFrontLabel(), brakeDistance, ultrac.getSensorValue(FRONT, true));
 				if (ultrac.isDistanceToCarInfrontOK(brakeDistance)) {
 					ledc.ledOff(RED_FRONT);					
 				}
