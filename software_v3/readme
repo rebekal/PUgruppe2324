@@ -1,1 +1,11 @@
-fungerer, men kan henge seg opp inni mellom -
+fungerende programvare, men siden jeg ikke har sensorer å teste med så simuleres disse tallene.
+bildata simuleres også - vet ikke om hvor mye av disse som skal taes med i endelig versjon..
+
+jeg fortsatte på noe av gammel kode så baksensoren er også tatt med ^^ (kan fjernes eller evt. legge til en user story for parking mode?)
+
+programmet kjører en stund, men så henger det seg mer eller mindre opp -- testing / optimalisering
+
+testing for bugs, mangler, forbedringer må utføres.
+
+
+- ZindreX
