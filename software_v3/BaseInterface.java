@@ -1,8 +1,8 @@
-package final_software;
+package working;
 
 public interface BaseInterface {
 	
-	final String carDataFile = "D:\\Programfiler (x86)\\Eclipse\\Workspace\\JavaFX\\src\\final_software\\carData";
+	final String carDataFile = "D:\\Programfiler (x86)\\Eclipse\\Workspace\\JavaFX\\src\\working\\carData";
 	
 //	Sensor
 //	final String FRONT = "front", LEFT = "left", RIGHT = "right", REAR = "rear";
@@ -16,6 +16,6 @@ public interface BaseInterface {
 	final String SIMULATE_MODE = "simulate mode", RUN_PROGRAM = "run program";
 	
 //	Car
-	final String DOOR_LENGTH = "door length", REAR_DOOR_LENGTH = "rear door length", BLIND_ZONE_VALUE = "blind zone value";
-	final String TOP_SPEED = "car top speed", ENGINE_MODE = "engine off";
+	final String DOOR_LENGTH = "Door", REAR_DOOR_LENGTH = "Rear door", BLIND_ZONE_VALUE = "Blind zone";
+	final String TOP_SPEED = "Top speed";
 }

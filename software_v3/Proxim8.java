@@ -1,4 +1,4 @@
-package final_software;
+package working;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,6 +84,8 @@ public class Proxim8 extends Application implements BaseInterface {
 	private DoubleProperty rightDistance = new SimpleDoubleProperty(this, "Right distance");
 	private DoubleProperty rearDistance = new SimpleDoubleProperty(this, "Rear distance");
 	private DoubleProperty brakeDistance = new SimpleDoubleProperty(this, "Brake distance");
+	private DoubleProperty currentDoorLength = new SimpleDoubleProperty(this, "Current door length");
+	private DoubleProperty currentRearDoorLength = new SimpleDoubleProperty(this, "Current rear door length");
 	
 //	Modes
 	private BooleanProperty drivingMode = new SimpleBooleanProperty(this, DRIVING_MODE);
@@ -284,29 +286,25 @@ public class Proxim8 extends Application implements BaseInterface {
 		simulateButton.setOnAction(e -> {
 			if (simulateActive.getValue()) {
 				simulateButton.setText("Start");
-				backUpData.writeCarDataToFile(carData.getDoorLength(), carData.getRearDoorLength(), carData.getBlindZoneValue(), carData.getTopSpeed());
+				carData.resetSimulation();
 			}
 			else {
 				simulateButton.setText("Stop");
+				currentDoorLength.setValue(carData.getDoorLength());
+				currentRearDoorLength.setValue(carData.getRearDoorLength());
+				
 		        new Thread() {
 		            // runnable for that thread
 		            public void run() {
 		                while (simulateActive.getValue()) {
-		                    try {
-		                        Thread.sleep(100);
+		                    // increase sleeptimer incase GUI becomes slow
+		                	try {
+		                        Thread.sleep(200);
 		                    } catch (InterruptedException e) {
 		                    }
 		                    // update ProgressIndicator on FX thread
 		                    Platform.runLater(new Runnable() {
 		                        public void run() {
-		                        	/*
-		                        	if (0 == carData.getCarSpeed()) {
-		                        		settingsButton.setDisable(false);
-		                        	}
-		                        	else {
-		                        		settingsButton.setDisable(true);
-		                        	}
-		                        	*/
 		                        	
 		                    		if (drivingMode.getValue() || blindZoneMode.getValue()) {
 		                    			carData.simulateOneStep();
@@ -333,10 +331,10 @@ public class Proxim8 extends Application implements BaseInterface {
 		                    		}
 		                    		
 		                    		if (drivingMode.getValue()) {
-		                    			Double frontDistance = ultraController.getSensorValue(FRONT, true);
-		                    			updateDistance(frontDistLabel, frontDistance, brakeDistance.getValue());
+		                    			frontDistance.setValue(ultraController.getSensorValue(FRONT, true));
+		                    			updateDistance(frontDistLabel, frontDistance.getValue(), brakeDistance.getValue());
 		                    			
-		                    			if (isSensorValueLargerThan(frontDistance, brakeDistance.getValue())) {
+		                    			if (isSensorValueLargerThan(frontDistance.getValue(), brakeDistance.getValue())) {
 //		                    				TODO alarm / LED ON ?
 		                    			}
 		                    			else {
@@ -367,25 +365,23 @@ public class Proxim8 extends Application implements BaseInterface {
 		                    		}
 		                    		
 		                    		if (parkingMode.getValue()) {
-		                    			double frontDistance = ultraController.getSensorValue(FRONT, true);
-		                    			double leftDistance = ultraController.getSensorValue(LEFT, true);
-		                    			double rightDistance = ultraController.getSensorValue(RIGHT, true);
-		                    			double rearDistance = ultraController.getSensorValue(REAR, true);
-		                    			double currentDoorLength = carData.getDoorLength();
-		                    			double currentRearDoorLength = carData.getRearDoorLength();
+		                    			frontDistance.setValue(ultraController.getSensorValue(FRONT, true));
+		                    			leftDistance.setValue(ultraController.getSensorValue(LEFT, true));
+		                    			rightDistance.setValue(ultraController.getSensorValue(RIGHT, true));
+		                    			rearDistance.setValue(ultraController.getSensorValue(REAR, true));
 		                    			
-		                    			updateDistance(frontDistLabel, frontDistance, 0.5);
-		                    			updateDistance(leftDistLabel, leftDistance, currentDoorLength);
-		                    			updateDistance(rightDistLabel, rightDistance, currentDoorLength);
-		                    			updateDistance(rearDistLabel, rearDistance, currentRearDoorLength);
+		                    			updateDistance(frontDistLabel, frontDistance.getValue(), 0.5);
+		                    			updateDistance(leftDistLabel, leftDistance.getValue(), currentDoorLength.getValue());
+		                    			updateDistance(rightDistLabel, rightDistance.getValue(), currentDoorLength.getValue());
+		                    			updateDistance(rearDistLabel, rearDistance.getValue(), currentRearDoorLength.getValue());
 		                    			
-		                    			if (isSensorValueLargerThan(leftDistance, currentDoorLength)) {
+		                    			if (isSensorValueLargerThan(leftDistance.getValue(), currentDoorLength.getValue())) {
 //		                    				TODO alarm / LED OFF ?
 		                    			}
 		                    			else {
 //		                    				TODO alarm / LED ON ?
 		                    			}
-		                    			if (isSensorValueLargerThan(rightDistance, currentDoorLength)) {
+		                    			if (isSensorValueLargerThan(rightDistance.getValue(), currentDoorLength.getValue())) {
 //		                    				TODO alarm / LED OFF ?
 		                    			}
 		                    			else {
@@ -396,14 +392,13 @@ public class Proxim8 extends Application implements BaseInterface {
 		                    });
 		                }
 		                interrupt(); // TODO optimalisere
-		                
 		            }
 		        }.start();
 			}
 			simulateActive.setValue(! simulateActive.getValue());
 		});
 		
-		final HBox settingsWindow = createSettingsWindow();
+		final GridPane settingsWindow = createSettingsWindow();
 		settingsWindow.setLayoutX(900);
 		settingsWindow.setLayoutY(500);
 		settingsButton.setOnAction(e -> {
@@ -426,7 +421,7 @@ public class Proxim8 extends Application implements BaseInterface {
 									rightDistLabel, rearDistLabel, driveModeButton, blindZoneModeButton,
 									parkingModeButton, simulateButton, settingsButton, mainRuleLabel, redLight);
 		Scene scene = new Scene(root, WIDTH, HEIGHT);		
-		primaryStage.setTitle("Aproxym8");
+		primaryStage.setTitle("Aproxim8");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
@@ -440,84 +435,103 @@ public class Proxim8 extends Application implements BaseInterface {
 	private Label mainRuleLabel = new Label("Rule");
 	private Label updateRuleLabel = new Label("Update rule");
 	
-	private HBox createSettingsWindow() {
+	private GridPane createSettingsWindow() {
+		Color settingsTextColor = Color.ORANGE;
 		updateRuleLabel.setVisible(false);
+//		>Settings>info
+		Label door = new Label(DOOR_LENGTH + ": ");
+		door.setTextFill(settingsTextColor);
+		Label doorValue = new Label(String.valueOf(carData.getDoorLength()) + "m");
+		doorValue.setTextFill(settingsTextColor);
+		Label rearDoor = new Label(REAR_DOOR_LENGTH + ": ");
+		rearDoor.setTextFill(settingsTextColor);
+		Label rearDoorValue = new Label(String.valueOf(carData.getRearDoorLength()) + "m");
+		rearDoorValue.setTextFill(settingsTextColor);
+		Label blindZone = new Label(BLIND_ZONE_VALUE + ": ");
+		blindZone.setTextFill(settingsTextColor);
+		Label blindZoneValue = new Label(String.valueOf(carData.getBlindZoneValue()) + "m");
+		blindZoneValue.setTextFill(settingsTextColor);
+		Label topSpeed = new Label(TOP_SPEED + ": ");
+		topSpeed.setTextFill(settingsTextColor);
+		Label topSpeedValue = new Label(String.valueOf(carData.getTopSpeed()) + "km/h");
+		topSpeedValue.setTextFill(settingsTextColor);
+		/*
+		Text updateParking = new Text(UPDATE_PARKING_SENSORS + ": ");
+		updateParking.setFill(Color.ORANGE);
+		Text updateParkingValue = new Text(String.valueOf(carData.getUpdatePFreq()));
+		updateParkingValue.setFill(settingsTextColor);
+		*/
+		
+		GridPane infoFields = new GridPane();
+		infoFields.setMaxWidth(125);
+		infoFields.add(door, 0, 0);
+		infoFields.add(doorValue, 1, 0);
+		
+		infoFields.add(rearDoor, 0, 1);
+		infoFields.add(rearDoorValue, 1, 1);
+		
+		infoFields.add(blindZone, 0, 2);
+		infoFields.add(blindZoneValue, 1, 2);
+		
+		infoFields.add(topSpeed, 0, 3);
+		infoFields.add(topSpeedValue, 1, 3);
+		/*
+		infoFields.add(updateParking, 0, 4);
+		infoFields.add(updateParkingValue, 1, 4);
+		*/
+		infoFields.setVisible(false);
+		
+//		>Settings>update	
 		TextField doorLengthField = new TextField();
 		doorLengthField.setPromptText("meter");
-		doorLengthField.setMaxWidth(75);
+		doorLengthField.setMaxWidth(125);
 		doorLengthField.setOnAction(e -> {
-			validateInput(doorLengthField, DOOR_LENGTH, 0.0, null);
+			validateInput(doorValue, doorLengthField, DOOR_LENGTH, 0.0, null);
 		});
 		
 		TextField rearDoorLengthField = new TextField();
 		rearDoorLengthField.setPromptText("meter");
-		rearDoorLengthField.setMaxWidth(75);
+		rearDoorLengthField.setMaxWidth(125);
 		rearDoorLengthField.setOnAction(e -> {
-			validateInput(rearDoorLengthField, REAR_DOOR_LENGTH, 0.0, null);
+			validateInput(rearDoorValue, rearDoorLengthField, REAR_DOOR_LENGTH, 0.0, null);
 		});
 		
 		TextField blindZoneValueField = new TextField();
-		blindZoneValueField.setMaxWidth(75);
+		blindZoneValueField.setMaxWidth(125);
 		blindZoneValueField.setPromptText("meter");
 		blindZoneValueField.setOnAction(e -> {
-			validateInput(blindZoneValueField, BLIND_ZONE_VALUE, 0.0, null);
+			validateInput(blindZoneValue, blindZoneValueField, BLIND_ZONE_VALUE, 0.0, null);
 		});
 		TextField topSpeedField = new TextField();
-		topSpeedField.setMaxWidth(75);
+		topSpeedField.setMaxWidth(125);
 		topSpeedField.setPromptText("km/h");
 		topSpeedField.setOnAction(e -> {
-			validateInput(topSpeedField, TOP_SPEED, 0.0, null);
+			validateInput(topSpeedValue, topSpeedField, TOP_SPEED, Double.valueOf(carSpeed.getValue()), 999.0);
 		});
 		
-		Label doorLengthLabel = new Label("Door length");
-		doorLengthLabel.setTextFill(Color.ORANGE);
-		Label rearDoorLengthLabel = new Label("Rear door length   ");
-		rearDoorLengthLabel.setTextFill(Color.ORANGE);
-		Label blindZoneValueLabel = new Label("Blind zone value");
-		blindZoneValueLabel.setTextFill(Color.ORANGE);
-		Label topSpeedLabel = new Label("Top speed");
-		topSpeedLabel.setTextFill(Color.ORANGE);
+		/*
+		TextField updateParkingField = new TextField();
+		updateParkingField.setMaxWidth(125);
+		updateParkingField.setPromptText("ms");
+		updateParkingField.setOnAction(e -> {
+			validateInput(updateParkingValue, updateParkingField, UPDATE_PARKING_SENSORS, 100.0, 5000.0);
+		});
+		*/
 		
-		VBox infoFields = new VBox();
-		Text door = new Text(DOOR_LENGTH + ": " + carData.getDoorLength() + "m");
-		door.setFill(Color.ORANGE);
-		Text rearDoor = new Text(REAR_DOOR_LENGTH + ": " + carData.getRearDoorLength() + "m");
-		rearDoor.setFill(Color.ORANGE);
-		Text blindZone = new Text(BLIND_ZONE_VALUE + ": " + carData.getBlindZoneValue() + "m");
-		blindZone.setFill(Color.ORANGE);
-		Text topSpeed = new Text(TOP_SPEED + ": " + carData.getTopSpeed() + "km/h");
-		topSpeed.setFill(Color.ORANGE);
-		infoFields.getChildren().add(door);
-		infoFields.getChildren().add(rearDoor);
-		infoFields.getChildren().add(blindZone);
-		infoFields.getChildren().add(topSpeed);
-		infoFields.setVisible(false);
-		
-		GridPane updateFields = new GridPane();
-		updateFields.add(doorLengthLabel, 0, 0);
-		updateFields.add(doorLengthField, 1, 0);
-		
-		updateFields.add(rearDoorLengthLabel, 0, 1);
-		updateFields.add(rearDoorLengthField, 1, 1);
-		
-		updateFields.add(blindZoneValueLabel, 0, 2);
-		updateFields.add(blindZoneValueField, 1, 2);
-		
-		updateFields.add(topSpeedLabel, 0, 3);
-		updateFields.add(topSpeedField, 1, 3);
-		
+		VBox updateFields = new VBox();
+		updateFields.getChildren().add(doorLengthField);
+		updateFields.getChildren().add(rearDoorLengthField);
+		updateFields.getChildren().add(blindZoneValueField);
+		updateFields.getChildren().add(topSpeedField);
+//		updateFields.getChildren().add(updateParkingField);
 		updateFields.setVisible(false);
+		
 		Button infoButton = new Button("Info");
 		infoButton.setPrefWidth(125);
 		infoButton.setPrefHeight(40);
 		infoButton.setOnAction(e -> {
 			boolean isVisible = ! infoFields.isVisible();
 			infoFields.setVisible(isVisible);
-			/*
-			if (isVisible) {
-				updateFields.setVisible(! isVisible);				
-			}
-			*/
 		});
 		
 		Button updateButton = new Button("Update");
@@ -526,23 +540,31 @@ public class Proxim8 extends Application implements BaseInterface {
 		updateButton.setOnAction(e -> {
 			boolean isVisible = ! updateFields.isVisible();
 			updateFields.setVisible(isVisible);
-			/*
-			if (isVisible) {
-				infoFields.setVisible(! isVisible);				
-			}
-			*/
 		});
 		
-		VBox info = new VBox(infoButton, infoFields);
-		VBox update = new VBox(updateButton, updateFields, updateRuleLabel);
-		HBox settingsWindow = new HBox(info, update);
-		settingsWindow.setLayoutX(1050);
-		settingsWindow.setLayoutY(500);
+		Button saveButton = new Button("Save");
+		saveButton.setPrefWidth(125);
+		saveButton.setPrefHeight(40);
+		saveButton.setOnAction(e -> {
+			backUpData.writeCarDataToFile(carData.getDoorLength(), carData.getRearDoorLength(), carData.getBlindZoneValue(), carData.getTopSpeed());
+		});
+		
+		GridPane settingsWindow = new GridPane();
 		settingsWindow.setVisible(settingsWindowVisible.getValue());
+		
+		settingsWindow.add(infoButton, 0, 0);
+		settingsWindow.add(infoFields, 0, 1);
+
+		settingsWindow.add(updateButton, 1, 0);
+		settingsWindow.add(updateFields, 1, 1);
+		settingsWindow.add(updateRuleLabel, 1, 2);
+		
+		settingsWindow.add(saveButton, 2, 0);
 		return settingsWindow;
 	}
+
 	
-	private void validateInput(TextField field, String carValue, Double min, Double max) {
+	private void validateInput(Label info, TextField field, String carValue, Double min, Double max) {
 		if (! isValidDouble(field.getText())) {
 			validate(field, false, updateRuleLabel, "Invalid number");			
 		}
@@ -552,6 +574,11 @@ public class Proxim8 extends Application implements BaseInterface {
 		else {
 			validate(field, true, updateRuleLabel, "OK");
 			carData.updateValue(carValue, Double.valueOf(field.getText()));
+			switch (carValue) {
+			case DOOR_LENGTH: case REAR_DOOR_LENGTH: case BLIND_ZONE_VALUE: info.setText(field.getText() + "m"); break;
+			case TOP_SPEED: info.setText(field.getText() + "km/h"); break;
+//			case UPDATE_PARKING_SENSORS: info.setText(field.getText() + "ms"); break;
+			}
 		}
 	}
 
@@ -586,7 +613,7 @@ public class Proxim8 extends Application implements BaseInterface {
         	if (textField.getText().equals("")) {
         		return;
         	}
-    		String color = isValid ? "green" : "red";
+    		String color = isValid ? "white" : "red";
     		textField.setStyle("-fx-background-color: " + color);
     	}
         if (ruleField != null) {

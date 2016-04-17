@@ -1,13 +1,16 @@
-package final_software;
+package working;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class Ultrasonic extends Sensor {
 	
-	private Double value;
 	private PythonCaller pyCaller;
+
+	private Double value;
 	private String valueFromPy;
+	private Random random = new Random();
 	
 	public Ultrasonic(String sensorName, PythonCaller pyCaller) {
 		super(sensorName, "Trigger pin", "Echo pin");
@@ -31,12 +34,13 @@ public class Ultrasonic extends Sensor {
 
 	public Double getValue(boolean update) {
 		if (update) {
-//			update();			
+//			update();	
 		}
-		return (double) new Random().nextInt(50);
+		value = random.nextDouble() + random.nextInt(50);
+		return Math.floor(value*1e2)/1e2;
 //		return value;
 	}
-	
+
 	public void reset() {
 		value = null;
 	}
