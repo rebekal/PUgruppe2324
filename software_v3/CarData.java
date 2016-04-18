@@ -31,15 +31,19 @@ public class CarData implements BaseInterface {
 		random = new Random();
 		timer = 0;
 		speedValues = createSpeedValues(this.topSpeed);
-		speedLimits = new ArrayList<Integer>(Arrays.asList(30, 40, 50, 60, 70, 80, 90, 100, 110));
+		speedLimits = getSpeedLimits();
 		currentSpeedLimit = getSpeedLimit(0);
 	}
 	
 	public CarData() {
 		random = new Random();
 		timer = 0;
-		speedLimits = new ArrayList<Integer>(Arrays.asList(30, 40, 50, 60, 70, 80, 90, 100, 110));
+		speedLimits = getSpeedLimits();
 		currentSpeedLimit = getSpeedLimit(0);
+	}
+
+	private ArrayList<Integer> getSpeedLimits() {
+		return new ArrayList<Integer>(Arrays.asList(30, 40, 50, 60, 70, 80, 90, 100, 110));
 	}
 	
 	private static boolean isValidFixedDistances(double doorLength, double rearDoorLength, double blindZoneValue, double topSpeed) {
@@ -293,27 +297,27 @@ public class CarData implements BaseInterface {
 	 */
 	private int getCurrentAcceleration(boolean trafficLightIsRed) {
 		if (trafficLightIsRed || brake) {
-			return 50;
+			return 25;
 		}
 		else if (rightAfterTurnLight()) {
 			turnLightJustUsed = false;						// ***
 			accelerationCount = turnLightMaxCount;
-			return 85;
+			return 40;
 		}
 		else if (atEndOfTurnLight()) {
 			turnLightJustUsed = true;
 			accelerationCount = turnLightMaxCount;
-			return 85;
+			return 40;
 		}
 		else if (currentlyUsingTurnLight()) {
 			accelerationCount = turnLightMaxCount;
-			return 750;
+			return 1000;
 		}
 		else if (currentSpeed < currentSpeedLimit || currentSpeed > currentSpeedLimit) {
 			accelerationCount = Math.abs(currentSpeedLimit - currentSpeed);
-			return 100;
+			return 50;
 		}
-		return 500; // *
+		return 120; // *
 	}
 
 	private boolean currentlyUsingTurnLight() {

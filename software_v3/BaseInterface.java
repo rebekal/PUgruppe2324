@@ -10,6 +10,7 @@ public interface BaseInterface {
 	
 //	Weather/road conditions
 	final String DRY_ASPHALT = "dry asphalt", WET_ASPHALT = "wet asphalt", SNOW = "snow", ICE = "ice";
+	final String WINTER = "winter", SPRING = "spring", SUMMER = "summer", AUTUMN = "autumn";
 	
 //  Modes
 	final String DRIVING_MODE = "driving mode", BLIND_ZONE_MODE = "blind zone", PARKING_MODE = "parking mode";

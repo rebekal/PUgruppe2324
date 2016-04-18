@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -58,17 +59,16 @@ public class Proxim8 extends Application implements BaseInterface {
 		}
 		else {
 			carData = new CarData();
-			validate(null, false, mainRuleLabel, "Update car data");
+			validate(null, false, mainRuleLabel, "Update vehicle data");
 			disableModeButtons(driveModeButton, blindZoneModeButton, parkingModeButton, true);
 		}
-		
-		weatherData = new WeatherData();
-		weatherData.setUseFrictionValue(DRY_ASPHALT);
+		weatherData = new WeatherData(); // TODO fix weather simulation
 	}
 	
-	final static int WIDTH = 1280;
-	final static int HEIGHT = 768;
-	final Font customFont = new Font("aria", 30);
+	final static int WIDTH = 1920; //1280;
+	final static int HEIGHT = 1000; //768;
+	final Font customFont = new Font("Aria", 40);
+	private Label mainRuleLabel = new Label("Main rule");
 	
 	final static Image BACKGROUND = new Image(Proxim8.class.getResource("background.png").toString());
 	final static Image CAR_1 = new Image(Proxim8.class.getResource("car1.png").toString());
@@ -112,87 +112,94 @@ public class Proxim8 extends Application implements BaseInterface {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		final Label programTitle = new Label("Proxim8");
-		programTitle.setFont(new Font("aria", 60));
+		programTitle.setFont(new Font("Aria", 90));
 		programTitle.setTextFill(Color.WHITE);
-		programTitle.setLayoutX(985);
-		programTitle.setLayoutY(20);
+		programTitle.setLayoutX(1480); //985
+		programTitle.setLayoutY(20); //20
 		
 		mainRuleLabel.setFont(new Font("aria", 20));
 		mainRuleLabel.setLayoutX(1020);
 		mainRuleLabel.setLayoutY(250);
 		
 		final ImageView background = new ImageView(BACKGROUND);
+		background.setFitHeight(HEIGHT);
+		background.setFitWidth(WIDTH);
 		
+		int modeButtonWidth = 150, modeButtonHeight = 90;
 		final Rectangle mode1Enabled = new Rectangle();
 		mode1Enabled.setFill(Color.GREEN);
-		mode1Enabled.setWidth(120);
-		mode1Enabled.setHeight(80);
+		mode1Enabled.setWidth(modeButtonWidth + 20); //120
+		mode1Enabled.setHeight(modeButtonHeight + 20); //80
 		mode1Enabled.setVisible(false);
 		
 		final Rectangle mode2Enabled = new Rectangle();
 		mode2Enabled.setFill(Color.GREEN);
-		mode2Enabled.setWidth(120);
-		mode2Enabled.setHeight(80);
+		mode2Enabled.setWidth(modeButtonWidth + 20);
+		mode2Enabled.setHeight(modeButtonHeight + 20);
 		mode2Enabled.setVisible(false);
 		
-		driveModeButton.setPrefWidth(100);
-		driveModeButton.setPrefHeight(60);
-		driveModeButton.setLayoutX(920);
-		driveModeButton.setLayoutY(120);
+		Font modeButtonFont = new Font("Aria", 24);
+		driveModeButton.setPrefWidth(modeButtonWidth); //100
+		driveModeButton.setPrefHeight(modeButtonHeight); //60
+		driveModeButton.setLayoutX(1380); //920
+		driveModeButton.setLayoutY(180); //120
+		driveModeButton.setFont(modeButtonFont);
 		
-		blindZoneModeButton.setPrefWidth(100);
-		blindZoneModeButton.setPrefHeight(60);
-		blindZoneModeButton.setLayoutX(1040);
-		blindZoneModeButton.setLayoutY(120);
+		blindZoneModeButton.setPrefWidth(modeButtonWidth);
+		blindZoneModeButton.setPrefHeight(modeButtonHeight);
+		blindZoneModeButton.setLayoutX(1560); //1040
+		blindZoneModeButton.setLayoutY(180); //120
+		blindZoneModeButton.setFont(modeButtonFont);
 
-		parkingModeButton.setPrefWidth(100);
-		parkingModeButton.setPrefHeight(60);
-		parkingModeButton.setLayoutX(1160);
-		parkingModeButton.setLayoutY(120);	
+		parkingModeButton.setPrefWidth(modeButtonWidth);
+		parkingModeButton.setPrefHeight(modeButtonHeight);
+		parkingModeButton.setLayoutX(1740);	//1160
+		parkingModeButton.setLayoutY(180); //120
+		parkingModeButton.setFont(modeButtonFont);
 		final Button simulateButton = new Button("Start");
-		simulateButton.setPrefWidth(85);
-		simulateButton.setPrefHeight(45);
-		simulateButton.setLayoutX(1050);
-		simulateButton.setLayoutY(300);
+		simulateButton.setPrefWidth(140); //85
+		simulateButton.setPrefHeight(60); //45
+		simulateButton.setLayoutX(1565); //1050
+		simulateButton.setLayoutY(500); //300
 		final Button settingsButton = new Button("Settings");
-		settingsButton.setPrefWidth(85);
-		settingsButton.setPrefHeight(45);
-		settingsButton.setLayoutX(1050);
-		settingsButton.setLayoutY(400);
+		settingsButton.setPrefWidth(140); //85
+		settingsButton.setPrefHeight(60);//45
+		settingsButton.setLayoutX(1565); //1050
+		settingsButton.setLayoutY(600); //400
 		
 		final ImageView myCar = new ImageView(CAR_1);
-		myCar.setFitHeight(473);
-		myCar.setFitWidth(216);
-		myCar.setLayoutX(324);
-		myCar.setLayoutY(168);
+		myCar.setFitHeight(650); //473
+		myCar.setFitWidth(300); //216
+		myCar.setLayoutX(500); //324
+		myCar.setLayoutY(200); //168
 		
 		final ImageView leftCar = new ImageView(CAR_2);
 		leftCar.setVisible(leftCarVisible.getValue());
-		leftCar.setFitHeight(473);
-		leftCar.setFitWidth(216);
-		leftCar.setLayoutX(36);
-		leftCar.setLayoutY(315);
+		leftCar.setFitHeight(650); //473
+		leftCar.setFitWidth(300); //216
+		leftCar.setLayoutX(100); //36
+		leftCar.setLayoutY(450);//315
 		
 		final ImageView rightCar = new ImageView(CAR_2);
 		rightCar.setVisible(rightCarVisible.getValue());
-		rightCar.setFitHeight(473);
-		rightCar.setFitWidth(216);
-		rightCar.setLayoutX(615);
-		rightCar.setLayoutY(315);
+		rightCar.setFitHeight(650);
+		rightCar.setFitWidth(300);
+		rightCar.setLayoutX(900); //615
+		rightCar.setLayoutY(450); //315
 		
 		final ImageView leftTurnLight = new ImageView(TURN_LIGHT);
 		leftTurnLight.setVisible(usingLeftTurnLight.getValue());
-		leftTurnLight.setFitHeight(42);
-		leftTurnLight.setFitWidth(38);
-		leftTurnLight.setLayoutX(320);
-		leftTurnLight.setLayoutY(237);
+		leftTurnLight.setFitHeight(50); //42
+		leftTurnLight.setFitWidth(46); //38
+		leftTurnLight.setLayoutX(495); //320
+		leftTurnLight.setLayoutY(300); //237
 		
 		final ImageView rightTurnLight = new ImageView(TURN_LIGHT);
 		rightTurnLight.setVisible(usingRightTurnLight.getValue());
-		rightTurnLight.setFitHeight(42);
-		rightTurnLight.setFitWidth(38);
-		rightTurnLight.setLayoutX(509);
-		rightTurnLight.setLayoutY(237);
+		rightTurnLight.setFitHeight(50); //42
+		rightTurnLight.setFitWidth(46); //38
+		rightTurnLight.setLayoutX(758); //509
+		rightTurnLight.setLayoutY(300); //237
 		
 		final ImageView redTrafficLight = new ImageView(RED_TRAFFIC_LIGHT);
 		redTrafficLight.setFitHeight(85);
@@ -201,30 +208,29 @@ public class Proxim8 extends Application implements BaseInterface {
 		Text redTrafficLightCountLabel = new Text();
 		VBox redLight = new VBox(redTrafficLight, redTrafficLightCountLabel);
 		redLight.setVisible(redTrafficLightVisible.getValue());
-		redLight.setLayoutX(690);
-		redLight.setLayoutY(99);
+		redLight.setLayoutX(1250); //690, Y = 99
 		
 		
 		Text frontDistLabel = new Text();
 		frontDistLabel.setVisible(false);
 		frontDistLabel.setFont(customFont);
-		frontDistLabel.setLayoutX(370);
-		frontDistLabel.setLayoutY(130);
+		frontDistLabel.setLayoutX(605); //370
+		frontDistLabel.setLayoutY(150); //130
 		Text leftDistLabel = new Text();
-		leftDistLabel.setFont(customFont);
 		leftDistLabel.setVisible(false);
-		leftDistLabel.setLayoutX(175);
-		leftDistLabel.setLayoutY(400);
+		leftDistLabel.setFont(customFont);
+		leftDistLabel.setLayoutX(300); //175
+		leftDistLabel.setLayoutY(500); //400
 		Text rightDistLabel = new Text();
-		rightDistLabel.setFont(customFont);
 		rightDistLabel.setVisible(false);
-		rightDistLabel.setLayoutX(575);
-		rightDistLabel.setLayoutY(400);
+		rightDistLabel.setFont(customFont);
+		rightDistLabel.setLayoutX(860); //575
+		rightDistLabel.setLayoutY(500); //400
 		Text rearDistLabel = new Text();
-		rearDistLabel.setFont(customFont);
 		rearDistLabel.setVisible(false);
-		rearDistLabel.setLayoutX(375);
-		rearDistLabel.setLayoutY(700);
+		rearDistLabel.setFont(customFont);
+		rearDistLabel.setLayoutX(600); //375
+		rearDistLabel.setLayoutY(925); //700
 		
 		
 		
@@ -233,19 +239,23 @@ public class Proxim8 extends Application implements BaseInterface {
 		carSpeedLabel.setLayoutY(40);
 		Text speedLimitLabel = new Text("Speed limit:");
 		speedLimitLabel.setFont(customFont);
-		speedLimitLabel.setLayoutX(300);
+		speedLimitLabel.setLayoutX(400); //300
 		speedLimitLabel.setLayoutY(40);
 		Text brakeDistanceLabel = new Text("Brake distance:");
 		brakeDistanceLabel.setFont(customFont);
-		brakeDistanceLabel.setLayoutX(600);
+		brakeDistanceLabel.setLayoutX(900); //600
 		brakeDistanceLabel.setLayoutY(40);
+		Text weatherLabel = new Text("Weather : ");
+		weatherLabel.setFont(customFont);
+//		weatherLabel.setLayoutX(value);
+		weatherLabel.setLayoutY(80);
 		
 		driveModeButton.setOnAction(e -> {
 			boolean activate = ! drivingMode.get();
 			drivingMode.set(activate);
 			frontDistLabel.setVisible(activate);
-			mode1Enabled.setLayoutX(910);
-			mode1Enabled.setLayoutY(110);
+			mode1Enabled.setLayoutX(1370); //910
+			mode1Enabled.setLayoutY(170); //110
 			mode1Enabled.setVisible(activate);
 			if (activate) {
 				parkingModeButton.setDisable(activate);
@@ -258,8 +268,8 @@ public class Proxim8 extends Application implements BaseInterface {
 		blindZoneModeButton.setOnAction(e -> {
 			boolean activate = ! blindZoneMode.get();
 			blindZoneMode.set(activate);
-			mode2Enabled.setLayoutX(1030);
-			mode2Enabled.setLayoutY(110);
+			mode2Enabled.setLayoutX(1550); //1030
+			mode2Enabled.setLayoutY(170); //110
 			mode2Enabled.setVisible(activate);
 			if (activate) {
 				parkingModeButton.setDisable(activate);
@@ -276,8 +286,8 @@ public class Proxim8 extends Application implements BaseInterface {
 			leftDistLabel.setVisible(activate);
 			rightDistLabel.setVisible(activate);
 			rearDistLabel.setVisible(activate);
-			mode2Enabled.setLayoutX(1150);
-			mode2Enabled.setLayoutY(110);
+			mode2Enabled.setLayoutX(1730); //1150
+			mode2Enabled.setLayoutY(170); //110
 			mode2Enabled.setVisible(activate);
 			driveModeButton.setDisable(activate);
 			blindZoneModeButton.setDisable(activate);
@@ -287,6 +297,7 @@ public class Proxim8 extends Application implements BaseInterface {
 			if (simulateActive.getValue()) {
 				simulateButton.setText("Start");
 				carData.resetSimulation();
+				weatherData.resetCount();
 			}
 			else {
 				simulateButton.setText("Stop");
@@ -299,7 +310,7 @@ public class Proxim8 extends Application implements BaseInterface {
 		                while (simulateActive.getValue()) {
 		                    // increase sleeptimer incase GUI becomes slow
 		                	try {
-		                        Thread.sleep(200);
+		                        Thread.sleep(500);
 		                    } catch (InterruptedException e) {
 		                    }
 		                    // update ProgressIndicator on FX thread
@@ -308,6 +319,7 @@ public class Proxim8 extends Application implements BaseInterface {
 		                        	
 		                    		if (drivingMode.getValue() || blindZoneMode.getValue()) {
 		                    			carData.simulateOneStep();
+		                    			weatherData.update();
 		                    			
 //		                    			Simulted car data
 		                    			carSpeed.setValue(carData.getCarSpeed());
@@ -317,6 +329,7 @@ public class Proxim8 extends Application implements BaseInterface {
 		                    			carSpeedLabel.textProperty().setValue("Car speed: " + carSpeed.getValue() + "km/h");
 		                    			speedLimitLabel.textProperty().setValue("Speed limit: " + speedLimit.getValue() + "km/h");
 		                    			brakeDistanceLabel.textProperty().setValue("Brake distance: " + String.valueOf(brakeDistance.getValue()) + "m");
+		                    			weatherLabel.textProperty().setValue("Weather: " + weatherData.getFrictionString());
 		                    			
 //		                				Left turn light / right turn light
 		                    			usingLeftTurnLight.setValue(carData.isLeftTurnLightOn());
@@ -399,8 +412,8 @@ public class Proxim8 extends Application implements BaseInterface {
 		});
 		
 		final GridPane settingsWindow = createSettingsWindow();
-		settingsWindow.setLayoutX(900);
-		settingsWindow.setLayoutY(500);
+		settingsWindow.setLayoutX(1370); //1450
+		settingsWindow.setLayoutY(700); //500
 		settingsButton.setOnAction(e -> {
 			settingsWindowVisible.setValue(! settingsWindowVisible.getValue());
 			settingsWindow.setVisible(settingsWindowVisible.getValue());
@@ -417,11 +430,11 @@ public class Proxim8 extends Application implements BaseInterface {
 		
 		final Group root = new Group(background, programTitle, mode1Enabled, mode2Enabled, settingsWindow, 
 									myCar, leftCar, rightCar, leftTurnLight, rightTurnLight, carSpeedLabel,
-									speedLimitLabel, brakeDistanceLabel, frontDistLabel, leftDistLabel,
+									speedLimitLabel, brakeDistanceLabel, weatherLabel, frontDistLabel, leftDistLabel,
 									rightDistLabel, rearDistLabel, driveModeButton, blindZoneModeButton,
 									parkingModeButton, simulateButton, settingsButton, mainRuleLabel, redLight);
 		Scene scene = new Scene(root, WIDTH, HEIGHT);		
-		primaryStage.setTitle("Aproxim8");
+		primaryStage.setTitle("Proxim8");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
@@ -432,29 +445,44 @@ public class Proxim8 extends Application implements BaseInterface {
 		parkingModeButton.setDisable(disable);
 	}
 	
-	private Label mainRuleLabel = new Label("Rule");
-	private Label updateRuleLabel = new Label("Update rule");
 	
+	
+	private Label updateRuleLabel = new Label("Update rule");
 	private GridPane createSettingsWindow() {
 		Color settingsTextColor = Color.ORANGE;
 		updateRuleLabel.setVisible(false);
+		
 //		>Settings>info
+		Font infoFont = new Font("Aria", 18);
+		Insets infoInsets = new Insets(0, 0, 5, 0);
 		Label door = new Label(DOOR_LENGTH + ": ");
 		door.setTextFill(settingsTextColor);
+		door.setFont(infoFont);
+		door.setPadding(new Insets(5, 0, 5, 0));
 		Label doorValue = new Label(String.valueOf(carData.getDoorLength()) + "m");
 		doorValue.setTextFill(settingsTextColor);
+		doorValue.setFont(infoFont);
 		Label rearDoor = new Label(REAR_DOOR_LENGTH + ": ");
 		rearDoor.setTextFill(settingsTextColor);
+		rearDoor.setFont(infoFont);
+		rearDoor.setPadding(infoInsets);
 		Label rearDoorValue = new Label(String.valueOf(carData.getRearDoorLength()) + "m");
 		rearDoorValue.setTextFill(settingsTextColor);
+		rearDoorValue.setFont(infoFont);
 		Label blindZone = new Label(BLIND_ZONE_VALUE + ": ");
 		blindZone.setTextFill(settingsTextColor);
+		blindZone.setFont(infoFont);
+		blindZone.setPadding(infoInsets);
 		Label blindZoneValue = new Label(String.valueOf(carData.getBlindZoneValue()) + "m");
 		blindZoneValue.setTextFill(settingsTextColor);
+		blindZoneValue.setFont(infoFont);
 		Label topSpeed = new Label(TOP_SPEED + ": ");
 		topSpeed.setTextFill(settingsTextColor);
+		topSpeed.setFont(infoFont);
+		topSpeed.setPadding(infoInsets);
 		Label topSpeedValue = new Label(String.valueOf(carData.getTopSpeed()) + "km/h");
 		topSpeedValue.setTextFill(settingsTextColor);
+		topSpeedValue.setFont(infoFont);
 		/*
 		Text updateParking = new Text(UPDATE_PARKING_SENSORS + ": ");
 		updateParking.setFill(Color.ORANGE);
@@ -463,7 +491,7 @@ public class Proxim8 extends Application implements BaseInterface {
 		*/
 		
 		GridPane infoFields = new GridPane();
-		infoFields.setMaxWidth(125);
+		infoFields.setMaxWidth(180);
 		infoFields.add(door, 0, 0);
 		infoFields.add(doorValue, 1, 0);
 		
@@ -484,26 +512,26 @@ public class Proxim8 extends Application implements BaseInterface {
 //		>Settings>update	
 		TextField doorLengthField = new TextField();
 		doorLengthField.setPromptText("meter");
-		doorLengthField.setMaxWidth(125);
+		doorLengthField.setMaxWidth(180);
 		doorLengthField.setOnAction(e -> {
-			validateInput(doorValue, doorLengthField, DOOR_LENGTH, 0.0, null);
+			validateInput(doorValue, doorLengthField, DOOR_LENGTH, 0.0, 10.0);
 		});
 		
 		TextField rearDoorLengthField = new TextField();
 		rearDoorLengthField.setPromptText("meter");
-		rearDoorLengthField.setMaxWidth(125);
+		rearDoorLengthField.setMaxWidth(180);
 		rearDoorLengthField.setOnAction(e -> {
-			validateInput(rearDoorValue, rearDoorLengthField, REAR_DOOR_LENGTH, 0.0, null);
+			validateInput(rearDoorValue, rearDoorLengthField, REAR_DOOR_LENGTH, 0.0, 10.0);
 		});
 		
 		TextField blindZoneValueField = new TextField();
-		blindZoneValueField.setMaxWidth(125);
+		blindZoneValueField.setMaxWidth(180);
 		blindZoneValueField.setPromptText("meter");
 		blindZoneValueField.setOnAction(e -> {
-			validateInput(blindZoneValue, blindZoneValueField, BLIND_ZONE_VALUE, 0.0, null);
+			validateInput(blindZoneValue, blindZoneValueField, BLIND_ZONE_VALUE, 0.0, 10.0);
 		});
 		TextField topSpeedField = new TextField();
-		topSpeedField.setMaxWidth(125);
+		topSpeedField.setMaxWidth(180);
 		topSpeedField.setPromptText("km/h");
 		topSpeedField.setOnAction(e -> {
 			validateInput(topSpeedValue, topSpeedField, TOP_SPEED, Double.valueOf(carSpeed.getValue()), 999.0);
@@ -527,24 +555,25 @@ public class Proxim8 extends Application implements BaseInterface {
 		updateFields.setVisible(false);
 		
 		Button infoButton = new Button("Info");
-		infoButton.setPrefWidth(125);
-		infoButton.setPrefHeight(40);
+		infoButton.setPrefWidth(180); //125
+		infoButton.setPrefHeight(40); //40
 		infoButton.setOnAction(e -> {
 			boolean isVisible = ! infoFields.isVisible();
 			infoFields.setVisible(isVisible);
 		});
 		
 		Button updateButton = new Button("Update");
-		updateButton.setPrefWidth(125);
-		updateButton.setPrefHeight(40);
+		updateButton.setPrefWidth(180); //125
+		updateButton.setPrefHeight(40); //40
 		updateButton.setOnAction(e -> {
 			boolean isVisible = ! updateFields.isVisible();
 			updateFields.setVisible(isVisible);
+			infoFields.setVisible(isVisible);
 		});
 		
 		Button saveButton = new Button("Save");
-		saveButton.setPrefWidth(125);
-		saveButton.setPrefHeight(40);
+		saveButton.setPrefWidth(180); //125
+		saveButton.setPrefHeight(40); //40
 		saveButton.setOnAction(e -> {
 			backUpData.writeCarDataToFile(carData.getDoorLength(), carData.getRearDoorLength(), carData.getBlindZoneValue(), carData.getTopSpeed());
 		});
