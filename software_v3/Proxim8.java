@@ -2,10 +2,8 @@ package working;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -18,12 +16,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -105,7 +101,7 @@ public class Proxim8 extends Application implements BaseInterface {
 	@FXML
 	private final Button driveModeButton = new Button("Drive");
 	@FXML
-	private final Button blindZoneModeButton = new Button("Blind Zone");
+	private final Button blindZoneModeButton = new Button("Blindspot");
 	@FXML
 	private final Button parkingModeButton = new Button("Parking");
 	
@@ -117,9 +113,9 @@ public class Proxim8 extends Application implements BaseInterface {
 		programTitle.setLayoutX(1480); //985
 		programTitle.setLayoutY(20); //20
 		
-		mainRuleLabel.setFont(new Font("aria", 20));
-		mainRuleLabel.setLayoutX(1020);
-		mainRuleLabel.setLayoutY(250);
+		mainRuleLabel.setFont(new Font("Aria", 40));
+		mainRuleLabel.setLayoutX(1470); //1020
+		mainRuleLabel.setLayoutY(400); //250
 		
 		final ImageView background = new ImageView(BACKGROUND);
 		background.setFitHeight(HEIGHT);
@@ -310,7 +306,7 @@ public class Proxim8 extends Application implements BaseInterface {
 		                while (simulateActive.getValue()) {
 		                    // increase sleeptimer incase GUI becomes slow
 		                	try {
-		                        Thread.sleep(500);
+		                        Thread.sleep(100);
 		                    } catch (InterruptedException e) {
 		                    }
 		                    // update ProgressIndicator on FX thread
@@ -417,6 +413,8 @@ public class Proxim8 extends Application implements BaseInterface {
 		settingsButton.setOnAction(e -> {
 			settingsWindowVisible.setValue(! settingsWindowVisible.getValue());
 			settingsWindow.setVisible(settingsWindowVisible.getValue());
+			updateRuleLabel.setVisible(! settingsWindowVisible.getValue());
+			saveLabel.setVisible(! settingsWindowVisible.getValue());
 			if (mainRuleLabel.isVisible()) {
 				disableModeButtons(driveModeButton, blindZoneModeButton, parkingModeButton, true);
 			}
@@ -448,9 +446,14 @@ public class Proxim8 extends Application implements BaseInterface {
 	
 	
 	private Label updateRuleLabel = new Label("Update rule");
+	private	Label saveLabel = new Label("Succuessfully saved");
 	private GridPane createSettingsWindow() {
 		Color settingsTextColor = Color.ORANGE;
 		updateRuleLabel.setVisible(false);
+		saveLabel.setVisible(false);
+		saveLabel.setFont(new Font("Aria", 20));
+		saveLabel.setTextFill(Color.GREEN);
+		saveLabel.setPadding(new Insets(0, 0, 0, 5));
 		
 //		>Settings>info
 		Font infoFont = new Font("Aria", 18);
@@ -483,12 +486,6 @@ public class Proxim8 extends Application implements BaseInterface {
 		Label topSpeedValue = new Label(String.valueOf(carData.getTopSpeed()) + "km/h");
 		topSpeedValue.setTextFill(settingsTextColor);
 		topSpeedValue.setFont(infoFont);
-		/*
-		Text updateParking = new Text(UPDATE_PARKING_SENSORS + ": ");
-		updateParking.setFill(Color.ORANGE);
-		Text updateParkingValue = new Text(String.valueOf(carData.getUpdatePFreq()));
-		updateParkingValue.setFill(settingsTextColor);
-		*/
 		
 		GridPane infoFields = new GridPane();
 		infoFields.setMaxWidth(180);
@@ -503,10 +500,7 @@ public class Proxim8 extends Application implements BaseInterface {
 		
 		infoFields.add(topSpeed, 0, 3);
 		infoFields.add(topSpeedValue, 1, 3);
-		/*
-		infoFields.add(updateParking, 0, 4);
-		infoFields.add(updateParkingValue, 1, 4);
-		*/
+
 		infoFields.setVisible(false);
 		
 //		>Settings>update	
@@ -537,21 +531,11 @@ public class Proxim8 extends Application implements BaseInterface {
 			validateInput(topSpeedValue, topSpeedField, TOP_SPEED, Double.valueOf(carSpeed.getValue()), 999.0);
 		});
 		
-		/*
-		TextField updateParkingField = new TextField();
-		updateParkingField.setMaxWidth(125);
-		updateParkingField.setPromptText("ms");
-		updateParkingField.setOnAction(e -> {
-			validateInput(updateParkingValue, updateParkingField, UPDATE_PARKING_SENSORS, 100.0, 5000.0);
-		});
-		*/
-		
 		VBox updateFields = new VBox();
 		updateFields.getChildren().add(doorLengthField);
 		updateFields.getChildren().add(rearDoorLengthField);
 		updateFields.getChildren().add(blindZoneValueField);
 		updateFields.getChildren().add(topSpeedField);
-//		updateFields.getChildren().add(updateParkingField);
 		updateFields.setVisible(false);
 		
 		Button infoButton = new Button("Info");
@@ -571,11 +555,14 @@ public class Proxim8 extends Application implements BaseInterface {
 			infoFields.setVisible(isVisible);
 		});
 		
-		Button saveButton = new Button("Save");
+		Button saveButton = new Button("Save settings");
 		saveButton.setPrefWidth(180); //125
 		saveButton.setPrefHeight(40); //40
 		saveButton.setOnAction(e -> {
 			backUpData.writeCarDataToFile(carData.getDoorLength(), carData.getRearDoorLength(), carData.getBlindZoneValue(), carData.getTopSpeed());
+			boolean readyForAction = ! carData.isReady();
+			mainRuleLabel.setVisible(readyForAction);
+			saveLabel.setVisible(true);
 		});
 		
 		GridPane settingsWindow = new GridPane();
@@ -589,36 +576,28 @@ public class Proxim8 extends Application implements BaseInterface {
 		settingsWindow.add(updateRuleLabel, 1, 2);
 		
 		settingsWindow.add(saveButton, 2, 0);
+		settingsWindow.add(saveLabel, 2, 1);
 		return settingsWindow;
 	}
 
 	
-	private void validateInput(Label info, TextField field, String carValue, Double min, Double max) {
+	private void validateInput(Label info, TextField field, String carValue, double min, double max) {
 		if (! isValidDouble(field.getText())) {
 			validate(field, false, updateRuleLabel, "Invalid number");			
 		}
 		else if (! isInsideBounderies(Double.valueOf(field.getText()), min, max)) {
-			validate(field, false, updateRuleLabel, convert(min, max));
+			validate(field, false, updateRuleLabel, min + " <= value <= " + max);
 		}
 		else {
-			validate(field, true, updateRuleLabel, "OK");
-			carData.updateValue(carValue, Double.valueOf(field.getText()));
+			validate(field, true, updateRuleLabel, "Successfully updated");
+			double valueR = Math.floor(Double.valueOf(field.getText())*1e2)/1e2;
+			carData.updateValue(carValue, Double.valueOf(valueR));
 			switch (carValue) {
-			case DOOR_LENGTH: case REAR_DOOR_LENGTH: case BLIND_ZONE_VALUE: info.setText(field.getText() + "m"); break;
-			case TOP_SPEED: info.setText(field.getText() + "km/h"); break;
+			case DOOR_LENGTH: case REAR_DOOR_LENGTH: case BLIND_ZONE_VALUE: info.setText(valueR+ "m"); break;
+			case TOP_SPEED: info.setText(valueR + "km/h"); break;
 //			case UPDATE_PARKING_SENSORS: info.setText(field.getText() + "ms"); break;
 			}
 		}
-	}
-
-	private String convert(Double min, Double max) {
-    	if (min != null && max == null) {
-    		return min + " <= value <= inf";
-    	}
-    	else if (min == null && max != null) {
-    		return "-inf <= value <= " + max;
-    	}
-    	return min + " <= value <= " + max;
 	}
 
 //	*** GUI methods ***
@@ -647,8 +626,13 @@ public class Proxim8 extends Application implements BaseInterface {
     	}
         if (ruleField != null) {
         	ruleField.setText(ruleMessage);
-        	ruleField.setTextFill(Color.RED);
-        	ruleField.setVisible(! isValid);
+        	if (isValid) {
+        		ruleField.setTextFill(Color.GREEN);
+        	}
+        	else {
+        		ruleField.setTextFill(Color.RED);        		
+        	}
+        	ruleField.setVisible(true);
         }
     }
     

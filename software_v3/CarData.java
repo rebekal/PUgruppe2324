@@ -19,9 +19,6 @@ public class CarData implements BaseInterface {
 	private boolean rightTurnLight, leftTurnLight;
 	
 	public CarData(double doorLength, double rearDoorLength, double blindZoneValue, double topSpeed) {
-		if (! isValidFixedDistances(doorLength, rearDoorLength, blindZoneValue, topSpeed)) {
-			throw new IllegalArgumentException("Fixed value(s) not valid");
-		}
 		this.doorLength = doorLength;
 		this.rearDoorLength = rearDoorLength;
 		this.blindZoneValue = blindZoneValue;
@@ -46,8 +43,8 @@ public class CarData implements BaseInterface {
 		return new ArrayList<Integer>(Arrays.asList(30, 40, 50, 60, 70, 80, 90, 100, 110));
 	}
 	
-	private static boolean isValidFixedDistances(double doorLength, double rearDoorLength, double blindZoneValue, double topSpeed) {
-		return 0 <= doorLength && 0 <= rearDoorLength && 0 <= blindZoneValue && 0 <= topSpeed;
+	public boolean isReady() {
+		return 0 <= doorLength && 0 <= rearDoorLength && 0 <= blindZoneValue && 0 < topSpeed;
 	}
 	
 	public double getDoorLength() {
@@ -297,12 +294,12 @@ public class CarData implements BaseInterface {
 	 */
 	private int getCurrentAcceleration(boolean trafficLightIsRed) {
 		if (trafficLightIsRed || brake) {
-			return 25;
+			return 10;
 		}
 		else if (rightAfterTurnLight()) {
 			turnLightJustUsed = false;						// ***
 			accelerationCount = turnLightMaxCount;
-			return 40;
+			return 20;
 		}
 		else if (atEndOfTurnLight()) {
 			turnLightJustUsed = true;
@@ -311,13 +308,13 @@ public class CarData implements BaseInterface {
 		}
 		else if (currentlyUsingTurnLight()) {
 			accelerationCount = turnLightMaxCount;
-			return 1000;
+			return 90;
 		}
 		else if (currentSpeed < currentSpeedLimit || currentSpeed > currentSpeedLimit) {
 			accelerationCount = Math.abs(currentSpeedLimit - currentSpeed);
 			return 50;
 		}
-		return 120; // *
+		return 100; // *
 	}
 
 	private boolean currentlyUsingTurnLight() {
