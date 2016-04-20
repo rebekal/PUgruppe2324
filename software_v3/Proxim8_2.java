@@ -17,10 +17,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -28,7 +34,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class Proxim8 extends Application implements BaseInterface {
+public class Proxim8_2 extends Application implements BaseInterface {
 
 	private UltrasonicController ultraController;
 	private BackUpData backUpData;
@@ -37,7 +43,7 @@ public class Proxim8 extends Application implements BaseInterface {
 	
 	private Map<String, Double> carDataValues;
 	
-	public Proxim8() {
+	public Proxim8_2() {
 //		Init ultrasonic sensors
 		PythonCaller pyCaller = new PythonCaller();
 		Map<String, Ultrasonic> ultrasonicSensors = new HashMap<String, Ultrasonic>();
@@ -59,7 +65,7 @@ public class Proxim8 extends Application implements BaseInterface {
 			validate(null, false, mainRuleLabel, "Update vehicle data");
 			disableModeButtons(driveModeButton, blindZoneModeButton, parkingModeButton, true);
 		}
-		weatherData = new WeatherData(); // TODO fix weather simulation
+		weatherData = new WeatherData();
 	}
 	
 	final static int WIDTH = 1920; //1280;
@@ -67,11 +73,11 @@ public class Proxim8 extends Application implements BaseInterface {
 	final Font customFont = new Font("Aria", 40);
 	private Label mainRuleLabel = new Label("Main rule");
 	
-	final static Image BACKGROUND = new Image(Proxim8.class.getResource("background.png").toString());
-	final static Image CAR_1 = new Image(Proxim8.class.getResource("car1.png").toString());
-	final static Image CAR_2 = new Image(Proxim8.class.getResource("car2.png").toString());
-	final static Image TURN_LIGHT = new Image(Proxim8.class.getResource("light1.png").toString());
-	final static Image RED_TRAFFIC_LIGHT = new Image(Proxim8.class.getResource("light2.png").toString());
+	final static Image BACKGROUND = new Image(Proxim8_2.class.getResource("background.png").toString());
+	final static Image CAR_1 = new Image(Proxim8_2.class.getResource("car1.png").toString());
+	final static Image CAR_2 = new Image(Proxim8_2.class.getResource("car2.png").toString());
+	final static Image TURN_LIGHT = new Image(Proxim8_2.class.getResource("light1.png").toString());
+	final static Image RED_TRAFFIC_LIGHT = new Image(Proxim8_2.class.getResource("light2.png").toString());
 	
 	private IntegerProperty carSpeed = new SimpleIntegerProperty(this, "Car speed");
 	private IntegerProperty speedLimit = new SimpleIntegerProperty(this, "Speed limit");
@@ -97,8 +103,9 @@ public class Proxim8 extends Application implements BaseInterface {
 	private BooleanProperty usingRightTurnLight = new SimpleBooleanProperty(this, "Right turn light");
 	private BooleanProperty redTrafficLightVisible = new SimpleBooleanProperty(this, "Red traffic light");
 	
-	private BooleanProperty settingsWindowVisible = new SimpleBooleanProperty(this, "Settings window");
-	private BooleanProperty simulateSettingsWindowVisible = new SimpleBooleanProperty(this, "Simulate settings window");
+	private BooleanProperty settingsVisible = new SimpleBooleanProperty(this, "Settings window");
+	private BooleanProperty smartBrake = new SimpleBooleanProperty(this, "Smart brake");
+	private BooleanProperty blindspotAlways = new SimpleBooleanProperty(this, "Blindspot always");
 	
 	@FXML
 	private final Button driveModeButton = new Button("Drive");
@@ -159,16 +166,11 @@ public class Proxim8 extends Application implements BaseInterface {
 		simulateButton.setPrefHeight(60); //45
 		simulateButton.setLayoutX(1565); //1050
 		simulateButton.setLayoutY(500); //300
-		final Button settingsButton = new Button("Settings");
+		final Button settingsButton = new Button("Show settings");
 		settingsButton.setPrefWidth(140); //85
 		settingsButton.setPrefHeight(60);//45
 		settingsButton.setLayoutX(1565); //1050
 		settingsButton.setLayoutY(600); //400
-		final Button simulateSettingsButton = new Button("Simulate settings");
-		simulateSettingsButton.setPrefWidth(140);
-		simulateSettingsButton.setPrefHeight(60);
-		simulateSettingsButton.setLayoutX(1565);
-		simulateSettingsButton.setLayoutY(660);
 		
 		final ImageView myCar = new ImageView(CAR_1);
 		myCar.setFitHeight(650); //473
@@ -351,31 +353,33 @@ public class Proxim8 extends Application implements BaseInterface {
 		                    			updateDistance(frontDistLabel, frontDistance.getValue(), brakeDistance.getValue());
 		                    			
 		                    			if (isSensorValueLargerThan(frontDistance.getValue(), brakeDistance.getValue())) {
-//		                    				TODO alarm / LED ON ?
+		                    				carData.setBrake(false);
 		                    			}
 		                    			else {
-//		                    				TODO alarm / LED OFF ?
+		                    				if (smartBrake.getValue()) {
+		                    					carData.setBrake(true);
+		                    				}
+		                    				else {
+		                    					carData.setBrake(false);
+		                    				}
 		                    			}
 		                    		}
 		                    		
 		                    		if (blindZoneMode.getValue()) {
 		                    			boolean leftBlind = isObjectInBlindZone(ultraController.getSensorValue(LEFT, true), carData.getBlindZoneValue());
 		                    			boolean rightBlind = isObjectInBlindZone(ultraController.getSensorValue(RIGHT, true), carData.getBlindZoneValue());
-		                    			if (usingLeftTurnLight.getValue() && leftBlind) {
+		                    			
+		                    			if (leftBlind && (blindspotAlways.getValue() || usingLeftTurnLight.getValue())) {
 		                    				leftCar.setVisible(true);
-//		                    				TODO alarm / LED ON ?
 		                    			}
 		                    			else {
 		                    				leftCar.setVisible(false);
-//		                    				TODO alarm / LED OFF ?
 		                    			}
-		                    			if (usingRightTurnLight.getValue() && rightBlind) {
+		                    			if (rightBlind && (blindspotAlways.getValue() || usingRightTurnLight.getValue())) {
 		                    				rightCar.setVisible(true);
-//		                    				TODO alarm / LED OFF ?
 		                    			}
 		                    			else {
 		                    				rightCar.setVisible(false);
-//		                    				TODO alarm / LED OFF ?
 		                    			}
 		                    			
 		                    		}
@@ -414,53 +418,29 @@ public class Proxim8 extends Application implements BaseInterface {
 			simulateActive.setValue(! simulateActive.getValue());
 		});
 		
-		Button saveButton = new Button("Save");
-		saveButton.setPrefWidth(180);
-		saveButton.setPrefHeight(40);
-		saveButton.setOnAction(e -> {
-			backUpData.writeCarDataToFile(carData.getDoorLength(), carData.getRearDoorLength(), carData.getBlindZoneValue(), carData.getTopSpeed());
-			boolean readyForAction = ! carData.isReady();
-			mainRuleLabel.setVisible(readyForAction);
-			saveSimulateLabel.setVisible(true);
-		});
-		
-		final GridPane settingsWindow = createSettingsWindow();
-		final GridPane simulateSettingsWindow = createSimulateSettingsWindow();
-
-		settingsWindow.setLayoutX(1370); //1450
-		settingsWindow.setLayoutY(800); //500
+		final TabPane settings = createSettingsWindow();
+		settings.setLayoutX(1370); //1450
+		settings.setLayoutY(670); //500
 		settingsButton.setOnAction(e -> {
-			if (simulateSettingsWindowVisible.getValue()) {
-				simulateSettingsWindow.setVisible(false);
-				simulateSettingsWindowVisible.setValue(false);
+			if (settingsVisible.getValue()) {
+				settingsButton.setText("Show settings");
 			}
-			settingsWindowVisible.setValue(! settingsWindowVisible.getValue());
-			settingsWindow.setVisible(settingsWindowVisible.getValue());
-			updateSettingsLabel.setVisible(! settingsWindowVisible.getValue());
-			saveSettingsLabel.setVisible(! settingsWindowVisible.getValue());
+			else {
+				settingsButton.setText("Hide settings");
+			}
+			settingsVisible.setValue(! settingsVisible.getValue());
+			settings.setVisible(settingsVisible.getValue());
+			
+			updateSettingsLabel.setVisible(! settingsVisible.getValue());
+			feedbackSettingsLabel.setVisible(! settingsVisible.getValue());
 			checkAfterSettings();
 		});
 		
-		simulateSettingsWindow.setLayoutX(1370);
-		simulateSettingsWindow.setLayoutY(800);
-		simulateSettingsButton.setOnAction(e -> {
-			if (settingsWindowVisible.getValue()) {
-				settingsWindow.setVisible(false);
-				settingsWindowVisible.setValue(false);
-			}
-			simulateSettingsWindowVisible.setValue(! simulateSettingsWindowVisible.getValue());
-			simulateSettingsWindow.setVisible(simulateSettingsWindowVisible.getValue());
-			updateSimulateLabel.setVisible(! simulateSettingsWindowVisible.getValue());
-			saveSimulateLabel.setVisible(! simulateSettingsWindowVisible.getValue());
-			checkAfterSettings();
-		});
-		
-		
-		final Group root = new Group(background, programTitle, mode1Enabled, mode2Enabled, settingsWindow, simulateSettingsWindow, 
+		final Group root = new Group(background, programTitle, mode1Enabled, mode2Enabled, settings, 
 									myCar, leftCar, rightCar, leftTurnLight, rightTurnLight, carSpeedLabel,
 									speedLimitLabel, brakeDistanceLabel, weatherLabel, frontDistLabel, leftDistLabel,
 									rightDistLabel, rearDistLabel, driveModeButton, blindZoneModeButton,
-									parkingModeButton, simulateButton, settingsButton, simulateSettingsButton,
+									parkingModeButton, simulateButton, settingsButton,
 									mainRuleLabel, redLight);
 		Scene scene = new Scene(root, WIDTH, HEIGHT);		
 		primaryStage.setTitle("Proxim8");
@@ -487,21 +467,68 @@ public class Proxim8 extends Application implements BaseInterface {
 	}
 	
 	
-	private Color settingsTextColor = Color.ORANGE;
-	private Font settingsFont = new Font("Aria", 18);
-	private Insets settingsInsets = new Insets(0, 0, 5, 0);
-	private Insets topSettingsInsets = new Insets(5, 0, 5, 0);
 	private Label updateSettingsLabel = new Label("Update rule");
-	private Label saveSettingsLabel = new Label("Succuessfully saved");
+	private Label feedbackSettingsLabel = new Label("Feedback label");
 	
-	private GridPane createSettingsWindow() {
-		updateSettingsLabel.setVisible(false);
-		saveSettingsLabel.setVisible(false);
-		saveSettingsLabel.setFont(new Font("Aria", 20));
-		saveSettingsLabel.setTextFill(Color.GREEN);
-		saveSettingsLabel.setPadding(new Insets(0, 0, 0, 5));
+	private TabPane createSettingsWindow() {
+		int tabHeight = 800, tabWidth = 540;
+		Color settingsTitleColor = Color.DODGERBLUE;
+		Color settingsTextColor = Color.ORANGE;
+		Font settingsFont = new Font("Aria", 18);
+		Font settingsTitleFont = new Font("Aria", 22);
+		Insets settingsInsets = new Insets(0, 0, 5, 0);
+		Insets topSettingsInsets = new Insets(5, 0, 5, 0);
+		Insets paddingAllAround = new Insets(5, 5, 5, 5);
+		Insets separatorInsets = new Insets(10, 0, 10, 0);
+
+		feedbackSettingsLabel.setFont(settingsFont);
+//		*** Settings>informationTab ***
+		Tab infoTab = new Tab("Information");
+		infoTab.setClosable(false);
 		
-//		>Settings>info
+		VBox infoContent = new VBox();
+		infoContent.setPrefSize(tabWidth, tabHeight);
+		
+		Label proxim8Version = new Label("Proxim8 v3.2");
+		proxim8Version.setTextFill(settingsTitleColor);
+		proxim8Version.setFont(customFont);
+		Label driveModeLabel = new Label("Drive mode:");
+		driveModeLabel.setTextFill(settingsTitleColor);
+		driveModeLabel.setFont(settingsTitleFont);
+		Text driveModeInfo = new Text("- measures the distance to the car infront\n- checks if your brakedistance < current distance");
+		driveModeInfo.setFill(settingsTextColor);
+		driveModeInfo.setFont(settingsFont);
+		Label blindspotLabel = new Label("Blindspot mode:");
+		blindspotLabel.setTextFill(settingsTitleColor);
+		blindspotLabel.setFont(settingsTitleFont);
+		Text blindspotModeInfo = new Text("- checks if there's a car in your blindzone");
+		blindspotModeInfo.setFill(settingsTextColor);
+		blindspotModeInfo.setFont(settingsFont);
+		Label parkingModeLabel = new Label("Parking mode:");
+		parkingModeLabel.setTextFill(settingsTitleColor);
+		parkingModeLabel.setFont(settingsTitleFont);
+		Text parkingModeInfo = new Text("- measures the distances around the car\n- gives a warning incase the distance < door length");
+		parkingModeInfo.setFill(settingsTextColor);
+		parkingModeInfo.setFont(settingsFont);
+		
+		infoContent.getChildren().addAll(proxim8Version, driveModeLabel, driveModeInfo, blindspotLabel, blindspotModeInfo, parkingModeLabel, parkingModeInfo);
+		infoTab.setContent(infoContent);
+		
+//		*** Settings>settingsTab ***
+		Tab settingsTab = new Tab("Settings");
+		settingsTab.setClosable(false);
+		
+		VBox settingsContent = new VBox();
+		settingsContent.setPrefSize(tabWidth, tabHeight);
+		
+		HBox getAndSetValues = new HBox();
+//		Settings>settingsTab>currentValues
+		GridPane currentValues = new GridPane();
+		currentValues.setPadding(paddingAllAround);
+		Label currentValuesLabel = new Label("Current values:");
+		currentValuesLabel.setTextFill(settingsTitleColor);
+		currentValuesLabel.setFont(new Font("Aria", 21));
+		
 		Label door = new Label(DOOR_LENGTH + ": ");
 		door.setTextFill(settingsTextColor);
 		door.setFont(settingsFont);
@@ -524,99 +551,91 @@ public class Proxim8 extends Application implements BaseInterface {
 		blindZoneValue.setTextFill(settingsTextColor);
 		blindZoneValue.setFont(settingsFont);
 		
-		GridPane infoFields = new GridPane();
-		infoFields.setMaxWidth(180);
-		infoFields.add(door, 0, 0);
-		infoFields.add(doorValue, 1, 0);
+		currentValues.add(currentValuesLabel, 0, 0);
+		currentValues.add(door, 0, 1);
+		currentValues.add(doorValue, 1, 1);
 		
-		infoFields.add(rearDoor, 0, 1);
-		infoFields.add(rearDoorValue, 1, 1);
+		currentValues.add(rearDoor, 0, 2);
+		currentValues.add(rearDoorValue, 1, 2);
 		
-		infoFields.add(blindZone, 0, 2);
-		infoFields.add(blindZoneValue, 1, 2);
+		currentValues.add(blindZone, 0, 3);
+		currentValues.add(blindZoneValue, 1, 3);
 		
-		infoFields.setVisible(false);
+//		Settings>settingTab>updateFields
+		VBox updateFields = new VBox();
+		updateFields.setPadding(paddingAllAround);
+		Label updateLabel = new Label("Set new value:");
+		updateLabel.setTextFill(settingsTitleColor);
+		updateLabel.setFont(settingsTitleFont);
 		
-//		>Settings>update	
 		TextField doorLengthField = new TextField();
 		doorLengthField.setPromptText("meter");
 		doorLengthField.setMaxWidth(180);
 		doorLengthField.setOnAction(e -> {
-			validateInput(doorValue, updateSettingsLabel, doorLengthField, DOOR_LENGTH, 0.0, 10.0);
+			validateInput(doorValue, feedbackSettingsLabel, doorLengthField, DOOR_LENGTH, 0.0, 10.0);
 		});
 		
 		TextField rearDoorLengthField = new TextField();
 		rearDoorLengthField.setPromptText("meter");
 		rearDoorLengthField.setMaxWidth(180);
 		rearDoorLengthField.setOnAction(e -> {
-			validateInput(rearDoorValue, updateSettingsLabel, rearDoorLengthField, REAR_DOOR_LENGTH, 0.0, 10.0);
+			validateInput(rearDoorValue, feedbackSettingsLabel, rearDoorLengthField, REAR_DOOR_LENGTH, 0.0, 10.0);
 		});
 		
 		TextField blindZoneValueField = new TextField();
 		blindZoneValueField.setMaxWidth(180);
 		blindZoneValueField.setPromptText("meter");
 		blindZoneValueField.setOnAction(e -> {
-			validateInput(blindZoneValue, updateSettingsLabel, blindZoneValueField, BLIND_ZONE_VALUE, 0.0, 10.0);
+			validateInput(blindZoneValue, feedbackSettingsLabel, blindZoneValueField, BLIND_ZONE_VALUE, 0.0, 10.0);
 		});
 		
-		VBox updateFields = new VBox();
-		updateFields.getChildren().add(doorLengthField);
-		updateFields.getChildren().add(rearDoorLengthField);
-		updateFields.getChildren().add(blindZoneValueField);
-		updateFields.setVisible(false);
+		updateFields.getChildren().addAll(updateLabel, doorLengthField, rearDoorLengthField, blindZoneValueField);
 		
-		Button infoButton = new Button("Info");
-		infoButton.setPrefWidth(180); //125
-		infoButton.setPrefHeight(40); //40
-		infoButton.setOnAction(e -> {
-			boolean isVisible = ! infoFields.isVisible();
-			infoFields.setVisible(isVisible);
-		});
+		Region r1 = new Region();
+		r1.setPrefWidth(50);
+		getAndSetValues.getChildren().addAll(currentValues, r1, updateFields);
 		
-		Button updateButton = new Button("Update");
-		updateButton.setPrefWidth(180); //125
-		updateButton.setPrefHeight(40); //40
-		updateButton.setOnAction(e -> {
-			boolean isVisible = ! updateFields.isVisible();
-			updateFields.setVisible(isVisible);
-			infoFields.setVisible(isVisible);
-		});
-		
-		Button saveButton = new Button("Save settings");
-		saveButton.setPrefWidth(180); //125
-		saveButton.setPrefHeight(40); //40
+		Text howToSave = new Text("Enter new values into the textfields and click [enter]\nClick the save button to write current values into vehicle file.");
+		howToSave.setFill(settingsTextColor);
+		howToSave.setFont(settingsFont);
+		Button saveButton = new Button("Save");
+		saveButton.setPrefWidth(180);
+		saveButton.setPrefHeight(40);
 		saveButton.setOnAction(e -> {
 			backUpData.writeCarDataToFile(carData.getDoorLength(), carData.getRearDoorLength(), carData.getBlindZoneValue(), carData.getTopSpeed());
 			boolean readyForAction = ! carData.isReady();
 			mainRuleLabel.setVisible(readyForAction);
-			saveSettingsLabel.setVisible(true);
+			feedbackSettingsLabel.setText("Successfully saved");
+			feedbackSettingsLabel.setVisible(true);
 		});
 		
-		GridPane settingsWindow = new GridPane();
-		settingsWindow.setVisible(settingsWindowVisible.getValue());
+		Region r2 = new Region();
+		r2.setPrefHeight(20);
+		Separator s1 = new Separator();
+		s1.setPadding(separatorInsets);
 		
-		settingsWindow.add(infoButton, 0, 0);
-		settingsWindow.add(infoFields, 0, 1);
-
-		settingsWindow.add(updateButton, 1, 0);
-		settingsWindow.add(updateFields, 1, 1);
-		settingsWindow.add(updateSettingsLabel, 1, 2);
+		Region r3 = new Region();
+		r3.setPrefWidth(30);
+		HBox saveLine = new HBox(saveButton, r3, feedbackSettingsLabel);
 		
-		settingsWindow.add(saveButton, 2, 0);
-		settingsWindow.add(saveSettingsLabel, 2, 1);
-		return settingsWindow;
-	}
-	
-	private Label updateSimulateLabel = new Label("Update rule");
-	private Label saveSimulateLabel = new Label("Succuessfully saved");
-	private GridPane createSimulateSettingsWindow() {
-		updateSimulateLabel.setVisible(false);
-		saveSimulateLabel.setVisible(false);
-		saveSimulateLabel.setFont(new Font("Aria", 20));
-		saveSimulateLabel.setTextFill(Color.GREEN);
-		saveSimulateLabel.setPadding(new Insets(0, 0, 0, 5));
+		settingsContent.getChildren().addAll(getAndSetValues, s1, howToSave, r2, saveLine);
+		settingsTab.setContent(settingsContent);
 		
-//		Simulatesettings>info
+//		*** Settings>simulate ***
+		Tab simulateTab = new Tab("Simulate");
+		simulateTab.setClosable(false);
+		
+		VBox simulateContent = new VBox();
+		simulateContent.setPrefSize(tabWidth, tabHeight);
+		
+		
+		HBox getAndSetSim = new HBox();
+//		Settings>simulate>currentValues
+		GridPane currentValuesSim = new GridPane();
+		Label currentValuesSimLabel = new Label("Current values:");
+		currentValuesSimLabel.setTextFill(settingsTitleColor);
+		currentValuesSimLabel.setFont(settingsTitleFont);
+		
 		Label topSpeed = new Label(TOP_SPEED + ": ");
 		topSpeed.setTextFill(settingsTextColor);
 		topSpeed.setFont(settingsFont);
@@ -625,83 +644,81 @@ public class Proxim8 extends Application implements BaseInterface {
 		topSpeedValue.setTextFill(settingsTextColor);
 		topSpeedValue.setFont(settingsFont);
 		
-		GridPane infoFields = new GridPane();
-		infoFields.setVisible(false);
+		currentValuesSim.add(currentValuesSimLabel, 0, 0);
+		currentValuesSim.add(topSpeed, 0, 1);
+		currentValuesSim.add(topSpeedValue, 1, 1);
 		
-		infoFields.add(topSpeed, 0, 0);
-		infoFields.add(topSpeedValue, 1, 0);
+//		Settings>simulate>updateFields
+		VBox updateFieldsSim = new VBox();
+		Label updateSimLabel = new Label("Set new value:");
+		updateSimLabel.setTextFill(settingsTitleColor);
+		updateSimLabel.setFont(settingsTitleFont);
 		
-//		SimulateSettings>update
 		TextField topSpeedField = new TextField();
 		topSpeedField.setMaxWidth(180);
 		topSpeedField.setPromptText("km/h");
 		topSpeedField.setOnAction(e -> {
-			validateInput(topSpeedValue, updateSimulateLabel, topSpeedField, TOP_SPEED, Double.valueOf(carSpeed.getValue()), 999.0);
+			validateInput(topSpeedValue, feedbackSettingsLabel, topSpeedField, TOP_SPEED, Double.valueOf(carSpeed.getValue()), 999.0);
 		});
 		
+		updateFieldsSim.getChildren().addAll(updateSimLabel, topSpeedField);
 		
-		VBox updateFields = new VBox();
-		updateFields.setVisible(false);
-		updateFields.getChildren().add(topSpeedField);
+		Region r4 = new Region();
+		r4.setPrefWidth(50);
+		getAndSetSim.getChildren().addAll(currentValuesSim, r4, updateFieldsSim);
 		
+		Separator s2 = new Separator();
+		s2.setPadding(separatorInsets);
+		
+		Text simulateInfo = new Text("Settings for simulate data.\nEnter new values into the textfields and click [enter]\nGo back to settings tab to save.");
+		simulateInfo.setFill(settingsTextColor);
+		simulateInfo.setFont(settingsFont);
+		
+		
+		simulateContent.getChildren().addAll(getAndSetSim, s2, simulateInfo);
+		simulateTab.setContent(simulateContent);
+		
+//		*** Settings>checkBoxTab ***
+		Tab checkboxTab = new Tab("Extra features");
+		checkboxTab.setClosable(false);
+		
+		VBox checkboxContent = new VBox();
+		checkboxContent.setPrefSize(tabWidth, tabHeight);
+		
+		Label checkboxInfo = new Label("Extra features");
+		checkboxInfo.setTextFill(settingsTitleColor);
+		checkboxInfo.setFont(settingsTitleFont);
+		checkboxInfo.setPadding(topSettingsInsets);
+		
+		Separator s3 = new Separator();
+		s3.setPadding(separatorInsets);
 		
 		Insets checkInsets = new Insets(5, 0, 5, 5);
 		CheckBox smartBrake = new CheckBox("Smart brake");
 		smartBrake.setFont(settingsFont);
 		smartBrake.setTextFill(settingsTextColor);
 		smartBrake.setPadding(checkInsets);
-		CheckBox blindSpotAlways = new CheckBox("Blindspot always");
-		blindSpotAlways.setFont(settingsFont);
-		blindSpotAlways.setTextFill(settingsTextColor);
-		blindSpotAlways.setPadding(checkInsets);
-		
-		VBox advancedFields = new VBox();
-		advancedFields.setVisible(false);
-		advancedFields.getChildren().add(smartBrake);
-		advancedFields.getChildren().add(blindSpotAlways);
-		
-		
-		Button infoButton = new Button("Info");
-		infoButton.setPrefWidth(180);
-		infoButton.setPrefHeight(40);
-		infoButton.setOnAction(e -> {
-			boolean isVisible = ! infoFields.isVisible();
-			infoFields.setVisible(isVisible);
+		smartBrake.setOnAction(e -> {
+			this.smartBrake.setValue(! this.smartBrake.getValue());
+		});
+		CheckBox blindspotAlways = new CheckBox("Blindspot always");
+		blindspotAlways.setFont(settingsFont);
+		blindspotAlways.setTextFill(settingsTextColor);
+		blindspotAlways.setPadding(checkInsets);
+		blindspotAlways.setOnAction(e -> {
+			this.blindspotAlways.setValue(! this.blindspotAlways.getValue());
 		});
 		
-		Button updateButton = new Button("Update");
-		updateButton.setPrefWidth(180);
-		updateButton.setPrefHeight(40);
-		updateButton.setOnAction(e -> {
-			boolean isVisible = ! updateFields.isVisible();
-			updateFields.setVisible(isVisible);
-			infoFields.setVisible(isVisible);
-		});
+		checkboxContent.getChildren().addAll(checkboxInfo, s3, smartBrake, blindspotAlways);
+		checkboxTab.setContent(checkboxContent);
 		
-		Button advancedButton = new Button("Advanced");
-		advancedButton.setPrefWidth(180);
-		advancedButton.setPrefHeight(40);
-		advancedButton.setOnAction(e -> {
-			boolean isVisible = ! advancedFields.isVisible();
-			advancedFields.setVisible(isVisible);
-		});
-	
-	
-		GridPane simulateSettings = new GridPane();
-		simulateSettings.setVisible(settingsWindowVisible.getValue());
-		
-		simulateSettings.add(infoButton, 0, 0);
-		simulateSettings.add(infoFields, 0, 1);
-
-		simulateSettings.add(updateButton, 1, 0);
-		simulateSettings.add(updateFields, 1, 1);
-		simulateSettings.add(updateSimulateLabel, 1, 2);
-		
-		simulateSettings.add(advancedButton, 2, 0);
-		simulateSettings.add(advancedFields, 2, 1);
-		return simulateSettings;
+		TabPane settingsWindow = new TabPane();
+		settingsWindow.setVisible(false);
+		settingsWindow.getTabs().addAll(infoTab, settingsTab, simulateTab, checkboxTab);
+		return settingsWindow;
 	}
 	
+
 	
 	private void validateInput(Label info, Label updateLabel, TextField field, String carValue, double min, double max) {
 		if (! isValidDouble(field.getText())) {

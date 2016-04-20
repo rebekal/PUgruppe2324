@@ -244,7 +244,7 @@ public class CarData implements BaseInterface {
 	 * - red traffic light -> reduce speed and stop, wait untill ready to go again
 	 */
 	private void changeCarSpeed() {
-		if (0 < redTrafficLightCountDown && 0 < currentSpeed || brake) {
+		if (0 < currentSpeed && (0 < redTrafficLightCountDown || brake)) {
 			index--;
 		}
 		else if (redTrafficLight) {

@@ -36,6 +36,7 @@ public class Ultrasonic extends Sensor {
 		if (update) {
 //			update();	
 		}
+//		return 2.0;
 		value = random.nextDouble() + random.nextInt(50);
 		return Math.floor(value*1e2)/1e2;
 //		return value;
