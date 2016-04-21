@@ -1,4 +1,4 @@
-package working;
+package release;
 
 public interface BaseInterface {
 	
@@ -18,5 +18,5 @@ public interface BaseInterface {
 	
 //	Car
 	final String DOOR_LENGTH = "Door", REAR_DOOR_LENGTH = "Rear door", BLIND_ZONE_VALUE = "Blind zone";
-	final String TOP_SPEED = "Top speed";
+	final String TOP_SPEED = "Top speed", FRONT_PARK_DISTANCE = "Front park distance";
 }

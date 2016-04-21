@@ -1,4 +1,4 @@
-package working;
+package release;
 
 public abstract class Sensor {
 	
@@ -23,6 +23,5 @@ public abstract class Sensor {
 			result += ", " + getPin2Name() + " = " + pin2;
 		}
 		return result;
-	}
-	
+	}	
 }

@@ -1,4 +1,4 @@
-package working;
+package release;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ public class WeatherData implements BaseInterface {
 	private Date date;
 	
 	private String frictionValue;
-	private int TIME_OUT = 80;
+	private int TIME_OUT = 200;
 	private int month, count;
 	private boolean winter, spring, summer, autumn;
 

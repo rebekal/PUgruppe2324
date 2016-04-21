@@ -1,4 +1,4 @@
-package working;
+package release;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,18 +11,19 @@ public class CarData implements BaseInterface {
 	 * CarData collects continous data from the car (simulated)
 	 */
 	
-	private double doorLength, rearDoorLength, blindZoneValue;
+	private double doorLength, rearDoorLength, blindZoneValue, frontDistParking;
 	private int topSpeed;
 	
 //	Simulated variables used by the private SimulateCar class
 	private int currentSpeed;
 	private boolean rightTurnLight, leftTurnLight;
 	
-	public CarData(double doorLength, double rearDoorLength, double blindZoneValue, double topSpeed) {
+	public CarData(double doorLength, double rearDoorLength, double blindZoneValue, double topSpeed, double frontDistParking) {
 		this.doorLength = doorLength;
 		this.rearDoorLength = rearDoorLength;
 		this.blindZoneValue = blindZoneValue;
 		this.topSpeed = (int) topSpeed;
+		this.frontDistParking = frontDistParking;
 		
 //		Simulate data
 		random = new Random();
@@ -44,7 +45,7 @@ public class CarData implements BaseInterface {
 	}
 	
 	public boolean isReady() {
-		return 0 <= doorLength && 0 <= rearDoorLength && 0 <= blindZoneValue && 0 < topSpeed;
+		return 0 <= doorLength && 0 <= rearDoorLength && 0 <= blindZoneValue && 0 < topSpeed && 0 <= frontDistParking;
 	}
 	
 	public double getDoorLength() {
@@ -78,7 +79,16 @@ public class CarData implements BaseInterface {
 	public void setTopSpeed(int topSpeed) {
 		this.topSpeed = topSpeed;
 	}
-
+	
+	public double getFrontDistParking() {
+		return frontDistParking;
+	}
+	
+	public void setFrontDistParking(double frontDistParking) {
+		this.frontDistParking = frontDistParking;
+	}
+	
+	
 	//	Returns a double value in km/h
 	public double getCarSpeed() {
 		return currentSpeed;
@@ -406,6 +416,7 @@ public class CarData implements BaseInterface {
 		case REAR_DOOR_LENGTH: setRearDoorLength(value); break;
 		case BLIND_ZONE_VALUE: setBlindZoneValue(value); break;
 		case TOP_SPEED: setTopSpeed((int) value); speedValues = createSpeedValues((int) value); break;
+		case FRONT_PARK_DISTANCE: setFrontDistParking(value); break;
 		}
 		
 	}

@@ -1,4 +1,4 @@
-package working;
+package release;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,7 +14,6 @@ import java.util.Map;
 public class BackUpData implements BaseInterface {
 	
 	public final String carDataFile;
-	private String input;
 	
 	private BufferedReader reader;
 	private BufferedWriter writer;
@@ -23,14 +22,15 @@ public class BackUpData implements BaseInterface {
 		this.carDataFile = carDataFile;
 	}
 	
-	public void writeCarDataToFile(double doorLength, double rearDoorLength, double blindZoneValue, double topSpeed) {
+	public void writeCarDataToFile(double doorLength, double rearDoorLength, double blindZoneValue, double topSpeed, double frontDistParking) {
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(carDataFile)));
 			try {
 				writer.write(DOOR_LENGTH + ":" + doorLength + System.lineSeparator()
 							+ REAR_DOOR_LENGTH + ":" + rearDoorLength + System.lineSeparator()
 							+ BLIND_ZONE_VALUE + ":" + blindZoneValue + System.lineSeparator()
-							+ TOP_SPEED + ":" + topSpeed);
+							+ TOP_SPEED + ":" + topSpeed + System.lineSeparator()
+							+ FRONT_PARK_DISTANCE + ":" + frontDistParking);
 			} catch (IOException e) {
 				System.out.println("An error occurred when writing to file: " + carDataFile);
 			} finally {
@@ -51,15 +51,18 @@ public class BackUpData implements BaseInterface {
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(carDataFile)));
 				
 				while (reader.ready()) {
-					input = reader.readLine();
+					String input = reader.readLine();
 					String inputSplit[] = input.split(":");
+					String carValue = inputSplit[0];
+					String value = inputSplit[1];
 					try {
-						switch (inputSplit[0]) {
-						case DOOR_LENGTH: backUpCarData.put(DOOR_LENGTH, Double.valueOf(inputSplit[1])); break;
-						case REAR_DOOR_LENGTH: backUpCarData.put(REAR_DOOR_LENGTH, Double.valueOf(inputSplit[1])); break;
-						case BLIND_ZONE_VALUE: backUpCarData.put(BLIND_ZONE_VALUE, Double.valueOf(inputSplit[1])); break;
-						case TOP_SPEED: backUpCarData.put(TOP_SPEED, Double.valueOf(inputSplit[1])); break;
-						default: System.out.println("No case found for: " + inputSplit[0]);
+						switch (carValue) {
+						case DOOR_LENGTH: backUpCarData.put(DOOR_LENGTH, Double.valueOf(value)); break;
+						case REAR_DOOR_LENGTH: backUpCarData.put(REAR_DOOR_LENGTH, Double.valueOf(value)); break;
+						case BLIND_ZONE_VALUE: backUpCarData.put(BLIND_ZONE_VALUE, Double.valueOf(value)); break;
+						case TOP_SPEED: backUpCarData.put(TOP_SPEED, Double.valueOf(value)); break;
+						case FRONT_PARK_DISTANCE: backUpCarData.put(FRONT_PARK_DISTANCE, Double.valueOf(value)); break;
+						default: System.out.println("No case found for: " + carValue);
 						}
 					} catch (IndexOutOfBoundsException e) {
 						System.out.println("Invalid line.");
@@ -73,7 +76,7 @@ public class BackUpData implements BaseInterface {
 		} catch (IOException e) {
 			System.out.println("An error occurred while reading from file: " + carDataFile);
 		}
-		return (backUpCarData.size() == 4) ? backUpCarData : null;
+		return (backUpCarData.size() == 5) ? backUpCarData : null;
 	}
 	
 	public void clearCarData() {
