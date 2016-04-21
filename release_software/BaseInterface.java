@@ -2,7 +2,7 @@ package release;
 
 public interface BaseInterface {
 	
-	final String carDataFile = "D:\\Programfiler (x86)\\Eclipse\\Workspace\\JavaFX\\src\\working\\carData";
+	final String carDataFile = "D:\\Programfiler (x86)\\Eclipse\\Workspace\\JavaFX\\src\\release\\carData";
 	
 //	Sensor
 //	final String FRONT = "front", LEFT = "left", RIGHT = "right", REAR = "rear";
