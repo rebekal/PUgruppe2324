@@ -13,14 +13,11 @@ import java.util.Map;
 
 public class BackUpData implements BaseInterface {
 	
-	public final String carDataFile;
+	public final String carDataFile = "D:\\Programfiler (x86)\\Eclipse\\Workspace\\JavaFX\\src\\release\\carData";
+	public final String userDataFile = "D:\\Programfiler (x86)\\Eclipse\\Workspace\\JavaFX\\src\\release\\userData";
 	
 	private BufferedReader reader;
 	private BufferedWriter writer;
-	
-	public BackUpData(String carDataFile) {
-		this.carDataFile = carDataFile;
-	}
 	
 	public void writeCarDataToFile(double doorLength, double rearDoorLength, double blindZoneValue, double topSpeed, double frontDistParking) {
 		try {
@@ -79,16 +76,18 @@ public class BackUpData implements BaseInterface {
 		return (backUpCarData.size() == 5) ? backUpCarData : null;
 	}
 	
-	public void clearCarData() {
+	public void writeUserDataToFile(boolean smartBrake, boolean blindspotAlways, boolean audioEnabled) {
 		try {
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(carDataFile)));
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userDataFile)));
 			try {
-				writer.write("");
+				writer.write(SMART_BRAKE + ":" + smartBrake + System.lineSeparator()
+							+ BLINDSPOT_ALWAYS + ":" + blindspotAlways + System.lineSeparator()
+							+ AUDIO_ENABLED + ":" + audioEnabled);
 			} catch (IOException e) {
-				System.out.println("An error occurred when writing to file: " + carDataFile);
+				System.out.println("An error occurred when writing to file: " + userDataFile);
 			} finally {
 				writer.close();
-				System.out.println("Data was successfully written to file: " + carDataFile);
+				System.out.println("Data was successfully written to file: " + userDataFile);
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found.");
@@ -96,4 +95,38 @@ public class BackUpData implements BaseInterface {
 			System.out.println("An IO exception occurred.");
 		}
 	}
+	
+	public Map<String, Boolean> readUserDataFromFile() {
+		Map<String, Boolean> userDataValues = new HashMap<String, Boolean>();
+		try {
+			try {
+				reader = new BufferedReader(new InputStreamReader(new FileInputStream(userDataFile)));
+				
+				while (reader.ready()) {
+					String input = reader.readLine();
+					String inputSplit[] = input.split(":");
+					String userValue = inputSplit[0];
+					String value = inputSplit[1];
+					try {
+						switch (userValue) {
+						case SMART_BRAKE: userDataValues.put(SMART_BRAKE, Boolean.valueOf(value)); break;
+						case BLINDSPOT_ALWAYS: userDataValues.put(BLINDSPOT_ALWAYS, Boolean.valueOf(value)); break;
+						case AUDIO_ENABLED: userDataValues.put(AUDIO_ENABLED, Boolean.valueOf(value)); break;
+						default: System.out.println("No case found for: " + userValue);
+						}
+					} catch (IndexOutOfBoundsException e) {
+						System.out.println("Invalid line.");
+						continue;
+					}
+				}
+			} finally {
+				reader.close();
+				System.out.println("Data was successfully read from file: " + userDataFile);
+			}
+		} catch (IOException e) {
+			System.out.println("An error occurred while reading from file: " + userDataFile);
+		}
+		return (userDataValues.size() == 3) ? userDataValues : null;
+	}
+	
 }

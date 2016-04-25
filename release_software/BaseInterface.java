@@ -2,8 +2,6 @@ package release;
 
 public interface BaseInterface {
 	
-	final String carDataFile = "D:\\Programfiler (x86)\\Eclipse\\Workspace\\JavaFX\\src\\release\\carData";
-	
 //	Sensor
 //	final String FRONT = "front", LEFT = "left", RIGHT = "right", REAR = "rear";
 	final String FRONT = "/home/aproxym8/sensor_front.py", LEFT = "/home/aproxym8/sensor_left.py", RIGHT = "/home/aproxym8/sensor_right.py", REAR = "/home/aproxym8/sensor_rear.py";
@@ -19,4 +17,7 @@ public interface BaseInterface {
 //	Car
 	final String DOOR_LENGTH = "Door", REAR_DOOR_LENGTH = "Rear door", BLIND_ZONE_VALUE = "Blind zone";
 	final String TOP_SPEED = "Top speed", FRONT_PARK_DISTANCE = "Front park distance";
+	
+//	User
+	final String SMART_BRAKE = "Smart brake", BLINDSPOT_ALWAYS = "Blindspot always", AUDIO_ENABLED = "Audio enabled";
 }
