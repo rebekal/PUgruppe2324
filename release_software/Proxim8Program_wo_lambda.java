@@ -74,9 +74,9 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		if (userDataValues != null) {
 			for (Map.Entry<String, Boolean> entry : userDataValues.entrySet()) {
 				switch (entry.getKey()) {
-				case SMART_BRAKE: smartBrakeActivated.setValue(entry.getValue()); break;
-				case BLINDSPOT_ALWAYS: blindspotAlwaysActivated.setValue(entry.getValue()); break;
-				case AUDIO_ENABLED: audioWarningActivated.setValue(entry.getValue()); break;
+				case SMART_BRAKE: smartBrakeActivated = entry.getValue(); break;
+				case BLINDSPOT_ALWAYS: blindspotAlwaysActivated = entry.getValue(); break;
+				case AUDIO_ENABLED: audioWarningActivated = entry.getValue(); break;
 				default: System.out.println("No case for " + entry.getKey());
 				}
 			}
@@ -97,32 +97,11 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 	final static Image TURN_LIGHT = new Image(Proxim8Program_wo_lambda.class.getResource("light1.png").toString());
 	final static Image RED_TRAFFIC_LIGHT = new Image(Proxim8Program_wo_lambda.class.getResource("light2.png").toString());
 	
-	private IntegerProperty carSpeed = new SimpleIntegerProperty(this, "Car speed");
-	private IntegerProperty speedLimit = new SimpleIntegerProperty(this, "Speed limit");
-	
-	private DoubleProperty frontDistance = new SimpleDoubleProperty(this, "Front distance");
-	private DoubleProperty leftDistance = new SimpleDoubleProperty(this, "Left distance");
-	private DoubleProperty rightDistance = new SimpleDoubleProperty(this, "Right distance");
-	private DoubleProperty rearDistance = new SimpleDoubleProperty(this, "Rear distance");
-	private DoubleProperty brakeDistance = new SimpleDoubleProperty(this, "Brake distance");
-	
-//	Modes
-	private BooleanProperty drivingMode = new SimpleBooleanProperty(this, DRIVING_MODE);
-	private BooleanProperty blindZoneMode = new SimpleBooleanProperty(this, BLIND_ZONE_MODE);
-	private BooleanProperty parkingMode = new SimpleBooleanProperty(this, PARKING_MODE);
-	
-//	Simulate
-	private BooleanProperty simulateActive = new SimpleBooleanProperty(this, "Simulate");
-	private BooleanProperty leftCarVisible = new SimpleBooleanProperty(this, "Left blind zone car");
-	private BooleanProperty rightCarVisible = new SimpleBooleanProperty(this, "Right blind zone car");
-	private BooleanProperty usingLeftTurnLight = new SimpleBooleanProperty(this, "Left turn light");
-	private BooleanProperty usingRightTurnLight = new SimpleBooleanProperty(this, "Right turn light");
-	private BooleanProperty redTrafficLightVisible = new SimpleBooleanProperty(this, "Red traffic light");
-	
-	private BooleanProperty settingsVisible = new SimpleBooleanProperty(this, "Settings window");
-	private BooleanProperty smartBrakeActivated = new SimpleBooleanProperty(this, "Smart brake");
-	private BooleanProperty blindspotAlwaysActivated = new SimpleBooleanProperty(this, "Blindspot always");
-	private BooleanProperty audioWarningActivated = new SimpleBooleanProperty(this, "Audio warning");
+	private int carSpeed, speedLimit, brakeDistance;
+	private Double frontDistance, leftDistance, rightDistance, rearDistance;
+	private boolean drivingMode, blindZoneMode, parkingMode;
+	private boolean simulateActive, leftCarVisible, rightCarVisible, usingLeftTurnLight, usingRightTurnLight, redTrafficLightVisible;
+	private boolean settingsVisible, smartBrakeActivated, blindspotAlwaysActivated, audioWarningActivated;
 	
 	@FXML
 	private final Button driveModeButton = new Button("Drive");
@@ -196,28 +175,28 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		myCar.setLayoutY(200); //168
 		
 		final ImageView leftCar = new ImageView(CAR_2);
-		leftCar.setVisible(leftCarVisible.getValue());
+		leftCar.setVisible(leftCarVisible);
 		leftCar.setFitHeight(650); //473
 		leftCar.setFitWidth(300); //216
 		leftCar.setLayoutX(100); //36
 		leftCar.setLayoutY(450);//315
 		
 		final ImageView rightCar = new ImageView(CAR_2);
-		rightCar.setVisible(rightCarVisible.getValue());
+		rightCar.setVisible(rightCarVisible);
 		rightCar.setFitHeight(650);
 		rightCar.setFitWidth(300);
 		rightCar.setLayoutX(900); //615
 		rightCar.setLayoutY(450); //315
 		
 		final ImageView leftTurnLight = new ImageView(TURN_LIGHT);
-		leftTurnLight.setVisible(usingLeftTurnLight.getValue());
+		leftTurnLight.setVisible(usingLeftTurnLight);
 		leftTurnLight.setFitHeight(50); //42
 		leftTurnLight.setFitWidth(46); //38
 		leftTurnLight.setLayoutX(495); //320
 		leftTurnLight.setLayoutY(300); //237
 		
 		final ImageView rightTurnLight = new ImageView(TURN_LIGHT);
-		rightTurnLight.setVisible(usingRightTurnLight.getValue());
+		rightTurnLight.setVisible(usingRightTurnLight);
 		rightTurnLight.setFitHeight(50); //42
 		rightTurnLight.setFitWidth(46); //38
 		rightTurnLight.setLayoutX(758); //509
@@ -229,7 +208,7 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		
 		Text redTrafficLightCountLabel = new Text();
 		VBox redLight = new VBox(redTrafficLight, redTrafficLightCountLabel);
-		redLight.setVisible(redTrafficLightVisible.getValue());
+		redLight.setVisible(redTrafficLightVisible);
 		redLight.setLayoutX(1250); //690, Y = 99
 		
 		
@@ -272,8 +251,8 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		driveModeButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				boolean activate = ! drivingMode.get();
-				drivingMode.set(activate);
+				boolean activate = ! drivingMode;
+				drivingMode = activate;
 				frontDistLabel.setVisible(activate);
 				mode1Enabled.setLayoutX(1370); //910
 				mode1Enabled.setLayoutY(170); //110
@@ -281,7 +260,7 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 				if (activate) {
 					parkingModeButton.setDisable(activate);
 				}
-				else if (!blindZoneMode.get()) {
+				else if (!blindZoneMode) {
 					parkingModeButton.setDisable(activate);
 				}
 			}
@@ -290,15 +269,15 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		blindZoneModeButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				boolean activate = ! blindZoneMode.get();
-				blindZoneMode.set(activate);
+				boolean activate = ! blindZoneMode;
+				blindZoneMode = activate;
 				mode2Enabled.setLayoutX(1550); //1030
 				mode2Enabled.setLayoutY(170); //110
 				mode2Enabled.setVisible(activate);
 				if (activate) {
 					parkingModeButton.setDisable(activate);
 				}
-				else if (!drivingMode.get()) {
+				else if (!drivingMode) {
 					parkingModeButton.setDisable(activate);
 				}
 			}
@@ -307,8 +286,8 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		parkingModeButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				boolean activate = ! parkingMode.get();
-				parkingMode.set(activate);
+				boolean activate = ! parkingMode;
+				parkingMode = activate;
 				frontDistLabel.setVisible(activate);
 				leftDistLabel.setVisible(activate);
 				rightDistLabel.setVisible(activate);
@@ -330,7 +309,7 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		simulateButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if (simulateActive.getValue()) {
+				if (simulateActive) {
 					simulateButton.setText("Start simulation");
 					carData.resetSimulation();
 					weatherData.resetCount();
@@ -341,7 +320,7 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 					new Thread() {
 						// runnable for that thread
 						public void run() {
-							while (simulateActive.getValue()) {
+							while (simulateActive) {
 								// increase sleeptimer incase GUI becomes slow
 								try {
 									Thread.sleep(100);
@@ -351,46 +330,46 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 								Platform.runLater(new Runnable() {
 									public void run() {
 										
-										if (drivingMode.getValue() || blindZoneMode.getValue()) {
+										if (drivingMode || blindZoneMode) {
 											carData.simulateOneStep();
 											weatherData.update();
 											
 //		                    			Simulted car data
-											carSpeed.setValue(carData.getCarSpeed());
-											speedLimit.setValue(carData.getSpeedLimit());
-											brakeDistance.setValue(getBrakeDistance(carSpeed.getValue(), weatherData.getFrictionValue()));
+											carSpeed = carData.getCarSpeed();
+											speedLimit = carData.getSpeedLimit();
+											brakeDistance = getBrakeDistance(carSpeed, weatherData.getFrictionValue());
 											
-											carSpeedLabel.textProperty().setValue("Car speed: " + carSpeed.getValue() + "km/h");
-											speedLimitLabel.textProperty().setValue("Speed limit: " + speedLimit.getValue() + "km/h");
-											brakeDistanceLabel.textProperty().setValue("Brake distance: " + String.valueOf(brakeDistance.getValue()) + "m");
+											carSpeedLabel.textProperty().setValue("Car speed: " + carSpeed + "km/h");
+											speedLimitLabel.textProperty().setValue("Speed limit: " + speedLimit + "km/h");
+											brakeDistanceLabel.textProperty().setValue("Brake distance: " + String.valueOf(brakeDistance) + "m");
 											weatherLabel.textProperty().setValue("Weather: " + weatherData.getFrictionString());
 											
 //		                				Left turn light / right turn light
-											usingLeftTurnLight.setValue(carData.isLeftTurnLightOn());
-											usingRightTurnLight.setValue(carData.isRightTurnLightOn());
-											leftTurnLight.setVisible(usingLeftTurnLight.getValue());
-											rightTurnLight.setVisible(usingRightTurnLight.getValue());
+											usingLeftTurnLight = carData.isLeftTurnLightOn();
+											usingRightTurnLight = carData.isRightTurnLightOn();
+											leftTurnLight.setVisible(usingLeftTurnLight);
+											rightTurnLight.setVisible(usingRightTurnLight);
 											
 //		                				Traffic light (red only)
 											redLight.setVisible(carData.getRedTrafficLight());
 											redTrafficLightCountLabel.textProperty().setValue(String.valueOf(carData.getRedTrafficLightCount()));
 										}
 										
-										if (drivingMode.getValue()) {
-											frontDistance.setValue(ultraController.getSensorValue(FRONT, true));
-											updateDistance(frontDistLabel, frontDistance.getValue(), brakeDistance.getValue());
+										if (drivingMode) {
+											frontDistance = ultraController.getSensorValue(FRONT, true);
+											updateDistance(frontDistLabel, frontDistance, brakeDistance);
 											
-											if (isSensorValueLargerThan(frontDistance.getValue(), brakeDistance.getValue())) {
+											if (isSensorValueLargerThan(frontDistance, brakeDistance)) {
 												carData.setBrake(false);
 											}
 											else {
-												if (smartBrakeActivated.getValue()) {
+												if (smartBrakeActivated) {
 													carData.setBrake(true);
 												}
 												else {
 													carData.setBrake(false);
 												}
-												if (audioWarningActivated.getValue()) {
+												if (audioWarningActivated) {
 //		                    			        player.play();
 //		                    			        player.stop();
 													// TODO
@@ -398,17 +377,17 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 											}
 										}
 										
-										if (blindZoneMode.getValue()) {
+										if (blindZoneMode) {
 											boolean leftBlind = isObjectInBlindZone(ultraController.getSensorValue(LEFT, true), carData.getBlindZoneValue());
 											boolean rightBlind = isObjectInBlindZone(ultraController.getSensorValue(RIGHT, true), carData.getBlindZoneValue());
 											
-											if (leftBlind && (blindspotAlwaysActivated.getValue() || usingLeftTurnLight.getValue())) {
+											if (leftBlind && (blindspotAlwaysActivated || usingLeftTurnLight)) {
 												leftCar.setVisible(true);
 											}
 											else {
 												leftCar.setVisible(false);
 											}
-											if (rightBlind && (blindspotAlwaysActivated.getValue() || usingRightTurnLight.getValue())) {
+											if (rightBlind && (blindspotAlwaysActivated || usingRightTurnLight)) {
 												rightCar.setVisible(true);
 											}
 											else {
@@ -417,24 +396,24 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 											
 										}
 										
-										if (parkingMode.getValue()) {
-											frontDistance.setValue(ultraController.getSensorValue(FRONT, true));
-											leftDistance.setValue(ultraController.getSensorValue(LEFT, true));
-											rightDistance.setValue(ultraController.getSensorValue(RIGHT, true));
-											rearDistance.setValue(ultraController.getSensorValue(REAR, true));
+										if (parkingMode) {
+											frontDistance = ultraController.getSensorValue(FRONT, true);
+											leftDistance = ultraController.getSensorValue(LEFT, true);
+											rightDistance = ultraController.getSensorValue(RIGHT, true);
+											rearDistance = ultraController.getSensorValue(REAR, true);
 											
-											updateDistance(frontDistLabel, frontDistance.getValue(), carData.getFrontDistParking());
-											updateDistance(leftDistLabel, leftDistance.getValue(), carData.getDoorLength());
-											updateDistance(rightDistLabel, rightDistance.getValue(), carData.getDoorLength());
-											updateDistance(rearDistLabel, rearDistance.getValue(), carData.getRearDoorLength());
+											updateDistance(frontDistLabel, frontDistance, carData.getFrontDistParking());
+											updateDistance(leftDistLabel, leftDistance, carData.getDoorLength());
+											updateDistance(rightDistLabel, rightDistance, carData.getDoorLength());
+											updateDistance(rearDistLabel, rearDistance, carData.getRearDoorLength());
 											
-											if (isSensorValueLargerThan(leftDistance.getValue(), carData.getDoorLength())) {
+											if (isSensorValueLargerThan(leftDistance, carData.getDoorLength())) {
 //		                    				TODO alarm / LED OFF ?
 											}
 											else {
 //		                    				TODO alarm / LED ON ?
 											}
-											if (isSensorValueLargerThan(rightDistance.getValue(), carData.getDoorLength())) {
+											if (isSensorValueLargerThan(rightDistance, carData.getDoorLength())) {
 //		                    				TODO alarm / LED OFF ?
 											}
 											else {
@@ -448,7 +427,7 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 						}
 					}.start();
 				}
-				simulateActive.setValue(! simulateActive.getValue());	
+				simulateActive = ! simulateActive;	
 			}
 		});
 		
@@ -458,17 +437,17 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		settingsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if (settingsVisible.getValue()) {
+				if (settingsVisible) {
 					settingsButton.setText("Show settings");
 				}
 				else {
 					settingsButton.setText("Hide settings");
 				}
-				settingsVisible.setValue(! settingsVisible.getValue());
-				settings.setVisible(settingsVisible.getValue());
+				settingsVisible = ! settingsVisible;
+				settings.setVisible(settingsVisible);
 				
-				feedbackSimulationLabel.setVisible(! settingsVisible.getValue());
-				feedbackSettingsLabel.setVisible(! settingsVisible.getValue());
+				feedbackSimulationLabel.setVisible(! settingsVisible);
+				feedbackSettingsLabel.setVisible(! settingsVisible);
 				checkAfterSettings();
 			}
 		});
@@ -494,7 +473,7 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		if (mainRuleLabel.isVisible()) {
 			disableModeButtons(driveModeButton, blindZoneModeButton, parkingModeButton, true);
 		}
-		else if (drivingMode.getValue() || blindZoneMode.getValue() || parkingMode.getValue()) {
+		else if (drivingMode || blindZoneMode || parkingMode) {
 			// avoid changing mode after closing settings
 		}
 		else {
@@ -732,7 +711,7 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		topSpeedField.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				validateInput(topSpeedValue, feedbackSimulationLabel, topSpeedField, TOP_SPEED, Double.valueOf(carSpeed.getValue()), 999.0);				
+				validateInput(topSpeedValue, feedbackSimulationLabel, topSpeedField, TOP_SPEED, Double.valueOf(carSpeed), 999.0);				
 			}
 		});
 		
@@ -774,38 +753,38 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		
 		Insets checkInsets = new Insets(5, 0, 5, 5);
 		CheckBox smartBrake = new CheckBox("Smart brake");
-		smartBrake.setSelected(smartBrakeActivated.getValue());
+		smartBrake.setSelected(smartBrakeActivated);
 		smartBrake.setFont(settingsFont);
 		smartBrake.setTextFill(settingsTextColor);
 		smartBrake.setPadding(checkInsets);
 		smartBrake.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				smartBrakeActivated.setValue(! smartBrakeActivated.getValue());
+				smartBrakeActivated = ! smartBrakeActivated;
 				validateAndUpdate(null, true, feedbackSettingsLabel, "Successfully updated");
 			}
 		});
 		CheckBox blindspotAlways = new CheckBox("Blindspot always");
-		blindspotAlways.setSelected(blindspotAlwaysActivated.getValue());
+		blindspotAlways.setSelected(blindspotAlwaysActivated);
 		blindspotAlways.setFont(settingsFont);
 		blindspotAlways.setTextFill(settingsTextColor);
 		blindspotAlways.setPadding(checkInsets);
 		blindspotAlways.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				blindspotAlwaysActivated.setValue(! blindspotAlwaysActivated.getValue());
+				blindspotAlwaysActivated = ! blindspotAlwaysActivated;
 				validateAndUpdate(null, true, feedbackSettingsLabel, "Successfully updated");
 			}
 		});
 		CheckBox audioWarning = new CheckBox("Audio warning");
-		audioWarning.setSelected(audioWarningActivated.getValue());
+		audioWarning.setSelected(audioWarningActivated);
 		audioWarning.setFont(settingsFont);
 		audioWarning.setTextFill(settingsTextColor);
 		audioWarning.setPadding(checkInsets);
 		audioWarning.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				audioWarningActivated.setValue(! audioWarningActivated.getValue());
+				audioWarningActivated = ! audioWarningActivated;
 				validateAndUpdate(null, true, feedbackSettingsLabel, "Successfully updated");				
 			}
 		});
@@ -884,7 +863,7 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
     		}
     	}
     	else {
-    		backUpData.writeUserDataToFile(smartBrakeActivated.getValue(), blindspotAlwaysActivated.getValue(), audioWarningActivated.getValue());
+    		backUpData.writeUserDataToFile(smartBrakeActivated, blindspotAlwaysActivated, audioWarningActivated);
     	}
     	
         if (ruleField != null) {
