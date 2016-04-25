@@ -301,10 +301,10 @@ public class Proxim8Program_wo_lambda extends Application implements BaseInterfa
 		});
 		
 //		*** Media warning *** TODO
-		Media warningAudioClip = new Media("file:///nedlastninger/warning.mp3");
-		MediaPlayer player = new MediaPlayer(warningAudioClip); 
-		player.stopTimeProperty().setValue(new Duration(300));
-		player.setVolume(0.1);
+//		Media warningAudioClip = new Media("file:///nedlastninger/warning.mp3");
+//		MediaPlayer player = new MediaPlayer(warningAudioClip); 
+//		player.stopTimeProperty().setValue(new Duration(300));
+//		player.setVolume(0.1);
 		
 		simulateButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
