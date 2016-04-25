@@ -52,7 +52,7 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 		ultrasonicSensors.put(FRONT, new Ultrasonic(FRONT, pyCaller));
 		ultrasonicSensors.put(LEFT, new Ultrasonic(LEFT, pyCaller));
 		ultrasonicSensors.put(RIGHT, new Ultrasonic(RIGHT, pyCaller));
-		ultrasonicSensors.put(REAR, new Ultrasonic(REAR, pyCaller));
+//		ultrasonicSensors.put(REAR, new Ultrasonic(REAR, pyCaller));
 		ultraController = new UltrasonicController(ultrasonicSensors);
 		
 //		*** Getting loading saved data and initialize car simulation ***
@@ -214,39 +214,39 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 		redLight.setLayoutY(99);
 		
 		
-		Text frontDistLabel = new Text();
+		final Text frontDistLabel = new Text();
 		frontDistLabel.setVisible(false);
 		frontDistLabel.setFont(customFont);
 		frontDistLabel.setLayoutX(375);
 		frontDistLabel.setLayoutY(130);
-		Text leftDistLabel = new Text();
+		final Text leftDistLabel = new Text();
 		leftDistLabel.setVisible(false);
 		leftDistLabel.setFont(customFont);
 		leftDistLabel.setLayoutX(175);
 		leftDistLabel.setLayoutY(400);
-		Text rightDistLabel = new Text();
+		final Text rightDistLabel = new Text();
 		rightDistLabel.setVisible(false);
 		rightDistLabel.setFont(customFont);
 		rightDistLabel.setLayoutX(575);
 		rightDistLabel.setLayoutY(400);
-		Text rearDistLabel = new Text();
+		final Text rearDistLabel = new Text();
 		rearDistLabel.setVisible(false);
 		rearDistLabel.setFont(customFont);
 		rearDistLabel.setLayoutX(375);
 		rearDistLabel.setLayoutY(700);
 		
-		Text carSpeedLabel = new Text("Car speed:");
+		final Text carSpeedLabel = new Text("Car speed:");
 		carSpeedLabel.setFont(simulateInfoFont);
 		carSpeedLabel.setLayoutY(24);
-		Text speedLimitLabel = new Text("Speed limit:");
+		final Text speedLimitLabel = new Text("Speed limit:");
 		speedLimitLabel.setFont(simulateInfoFont);
 		speedLimitLabel.setLayoutX(300);
 		speedLimitLabel.setLayoutY(24);
-		Text brakeDistanceLabel = new Text("Brake distance:");
+		final Text brakeDistanceLabel = new Text("Brake distance:");
 		brakeDistanceLabel.setFont(simulateInfoFont);
 		brakeDistanceLabel.setLayoutX(600);
 		brakeDistanceLabel.setLayoutY(24);
-		Text weatherLabel = new Text("Weather : ");
+		final Text weatherLabel = new Text("Weather : ");
 		weatherLabel.setFont(simulateInfoFont);
 		weatherLabel.setLayoutY(60);
 		
@@ -323,7 +323,7 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 						// runnable for that thread
 						public void run() {
 							while (simulateActive) {
-								// increase sleeptimer incase GUI becomes slow
+								// increase sleep timer incase GUI becomes slow
 								try {
 									Thread.sleep(100);
 								} catch (InterruptedException e) {
@@ -336,7 +336,7 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 											carData.simulateOneStep();
 											weatherData.update();
 											
-//		                    				Simulted car data
+//		                    				Simulated car data
 											carSpeed = carData.getCarSpeed();
 											speedLimit = carData.getSpeedLimit();
 											brakeDistance = getBrakeDistance(carSpeed, weatherData.getFrictionValue());
@@ -402,25 +402,25 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 											frontDistance = ultraController.getSensorValue(FRONT, true);
 											leftDistance = ultraController.getSensorValue(LEFT, true);
 											rightDistance = ultraController.getSensorValue(RIGHT, true);
-											rearDistance = ultraController.getSensorValue(REAR, true);
+//											rearDistance = ultraController.getSensorValue(REAR, true);
 											
 											updateDistance(frontDistLabel, frontDistance, carData.getFrontDistParking());
 											updateDistance(leftDistLabel, leftDistance, carData.getDoorLength());
 											updateDistance(rightDistLabel, rightDistance, carData.getDoorLength());
-											updateDistance(rearDistLabel, rearDistance, carData.getRearDoorLength());
+//											updateDistance(rearDistLabel, rearDistance, carData.getRearDoorLength());
 											
-											if (isSensorValueLargerThan(leftDistance, carData.getDoorLength())) {
-//		                    				TODO alarm / LED OFF ?
-											}
-											else {
-//		                    				TODO alarm / LED ON ?
-											}
-											if (isSensorValueLargerThan(rightDistance, carData.getDoorLength())) {
-//		                    				TODO alarm / LED OFF ?
-											}
-											else {
-//		                    				TODO alarm / LED ON ?
-											}
+//											if (isSensorValueLargerThan(leftDistance, carData.getDoorLength())) {	TODO
+//
+//											}
+//											else {
+//
+//											}
+//											if (isSensorValueLargerThan(rightDistance, carData.getDoorLength())) {
+//
+//											}
+//											else {
+//
+//											}
 										}
 									}
 								});
