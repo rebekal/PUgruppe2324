@@ -85,7 +85,6 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 		weatherData = new WeatherData();
 	}
 
-
 	final static int WIDTH = 1280;
 	final static int HEIGHT = 768;
 	final Font customFont = new Font("Aria", 40);
@@ -262,7 +261,11 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 				if (activate) {
 					parkingModeButton.setDisable(activate);
 				}
-				else if (!blindZoneMode) {
+				else {
+					leftTurnLight.setVisible(false);
+					rightTurnLight.setVisible(false);
+				}
+				if (!blindZoneMode) {
 					parkingModeButton.setDisable(activate);
 				}
 			}
@@ -279,7 +282,11 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 				if (activate) {
 					parkingModeButton.setDisable(activate);
 				}
-				else if (!drivingMode) {
+				else {
+					leftCar.setVisible(false);
+					rightCar.setVisible(false);
+				}
+				if (!drivingMode) {
 					parkingModeButton.setDisable(activate);
 				}
 			}
@@ -299,6 +306,12 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 				mode2Enabled.setVisible(activate);
 				driveModeButton.setDisable(activate);
 				blindZoneModeButton.setDisable(activate);
+				if (activate) {
+					carSpeedLabel.setText("Car speed:");
+					speedLimitLabel.setText("Speed limit:");
+					brakeDistanceLabel.setText("Brake distance:");
+					weatherLabel.setText("Weather:");
+				}
 			}
 		});
 		
@@ -433,9 +446,9 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 			}
 		});
 		
-		final TabPane settings = createSettingsWindow();
-		settings.setLayoutX(900);
-		settings.setLayoutY(450);
+		final TabPane settingsWindow = createSettingsWindow();
+		settingsWindow.setLayoutX(900);
+		settingsWindow.setLayoutY(450);
 		settingsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -446,40 +459,24 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 					settingsButton.setText("Hide settings");
 				}
 				settingsVisible = ! settingsVisible;
-				settings.setVisible(settingsVisible);
+				settingsWindow.setVisible(settingsVisible);
 				
 				feedbackSimulationLabel.setVisible(! settingsVisible);
 				feedbackSettingsLabel.setVisible(! settingsVisible);
-				checkAfterSettings();
 			}
 		});
 		
-		final Group root = new Group(background, programTitle, mode1Enabled, mode2Enabled, settings, 
+		final Group root = new Group(background, programTitle, mode1Enabled, mode2Enabled, settingsWindow, 
 									myCar, leftCar, rightCar, leftTurnLight, rightTurnLight, carSpeedLabel,
 									speedLimitLabel, brakeDistanceLabel, weatherLabel, frontDistLabel, leftDistLabel,
 									rightDistLabel, rearDistLabel, driveModeButton, blindZoneModeButton,
 									parkingModeButton, simulateButton, settingsButton,
-									mainRuleLabel, redLight);
+									mainRuleLabel); // redLight);
 		Scene scene = new Scene(root, WIDTH, HEIGHT);		
 		primaryStage.setTitle("Proxim8");
+		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-	}
-	
-	/*
-	 * Method checks if all required data is initialized so that Proxim8's features can be used
-	 * - Door length, rear door length, blind zone value
-	 */
-	private void checkAfterSettings() {
-		if (mainRuleLabel.isVisible()) {
-			disableModeButtons(driveModeButton, blindZoneModeButton, parkingModeButton, true);
-		}
-		else if (drivingMode || blindZoneMode || parkingMode) {
-			// avoid changing mode after closing settings
-		}
-		else {
-			disableModeButtons(driveModeButton, blindZoneModeButton, parkingModeButton, false);
-		}
 	}
 	
 //	Enables / disables Proxim8's features
@@ -489,8 +486,7 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 		parkingModeButton.setDisable(disable);
 	}
 	
-	
-//	*** Settings tab/window ***
+//	*** Settings tab/window below ***
 	private Label feedbackSettingsLabel = new Label("Settings feedback label");
 	private Label feedbackSimulationLabel = new Label("Simulation feedback label");
 	
@@ -514,6 +510,7 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 		Insets separatorInsets = new Insets(5, 0, 5, 0);
 		feedbackSettingsLabel.setFont(settingsFont);
 		feedbackSimulationLabel.setFont(settingsFont);
+		String updateHelp = "Enter new values into the textfields" + System.lineSeparator() + "and click [enter] to update current values.";
 
 //		*** Settings>informationTab ***
 		Tab infoTab = new Tab("Information");
@@ -663,15 +660,15 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 		Separator settingsSeparator = new Separator();
 		settingsSeparator.setPadding(separatorInsets);
 		
-		final Text howToSave = new Text("Enter new values into the textfields" + System.lineSeparator() + "and click [enter] to update current values.");
-		howToSave.setFill(settingsTextColor);
-		howToSave.setFont(settingsFont);
+		final Text howToUpdate = new Text(updateHelp);
+		howToUpdate.setFill(settingsTextColor);
+		howToUpdate.setFont(settingsFont);
 		
 		Separator settingsSeparator2 = new Separator();
 		settingsSeparator2.setPadding(separatorInsets);
 		
 		
-		settingsContent.getChildren().addAll(getAndSetValues, settingsSeparator, howToSave, settingsSeparator2, feedbackSettingsLabel);
+		settingsContent.getChildren().addAll(getAndSetValues, settingsSeparator, howToUpdate, settingsSeparator2, feedbackSettingsLabel);
 		settingsTab.setContent(settingsContent);
 		
 //		*** Settings>simulate ***
@@ -727,8 +724,7 @@ public class Proxim8Program_wo_lambda_1280 extends Application implements BaseIn
 		Separator simulationSeparator = new Separator();
 		simulationSeparator.setPadding(separatorInsets);
 		
-		final Text simulateInfo = new Text("Settings for simulate data." + System.lineSeparator()
-										 + "Enter new values into the textfields and click [enter]");
+		final Text simulateInfo = new Text(updateHelp);
 		simulateInfo.setFill(settingsTextColor);
 		simulateInfo.setFont(settingsFont);
 		
