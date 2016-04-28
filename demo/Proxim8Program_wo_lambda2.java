@@ -459,26 +459,26 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 		infoContent.setPrefSize(tabWidth, tabHeight);
 		infoContent.setPadding(paddingAllAround);
 		
-		Label proxim8Version = new Label("Proxim8 v3.3");
+		final Label proxim8Version = new Label("Proxim8 v3.3");
 		proxim8Version.setTextFill(settingsTitleColor);
 		proxim8Version.setFont(customFont);
-		Label driveModeLabel = new Label("Drive mode:");
+		final Label driveModeLabel = new Label("Drive mode:");
 		driveModeLabel.setTextFill(settingsTitleColor);
 		driveModeLabel.setFont(settingsTitleFont);
-		Text driveModeInfo = new Text("- measures the distance to the car infront of you" + System.lineSeparator()
+		final Text driveModeInfo = new Text("- measures the distance to the car infront of you" + System.lineSeparator()
 									  + "- checks if your brakedistance < current distance");
 		driveModeInfo.setFill(settingsColor);
 		driveModeInfo.setFont(settingsFont);
-		Label blindspotLabel = new Label("Blindspot mode:");
+		final Label blindspotLabel = new Label("Blindspot mode:");
 		blindspotLabel.setTextFill(settingsTitleColor);
 		blindspotLabel.setFont(settingsTitleFont);
-		Text blindspotModeInfo = new Text("- checks if there's a car in your blindzone");
+		final Text blindspotModeInfo = new Text("- checks if there's a car in your blindzone");
 		blindspotModeInfo.setFill(settingsColor);
 		blindspotModeInfo.setFont(settingsFont);
-		Label parkingModeLabel = new Label("Parking mode:");
+		final Label parkingModeLabel = new Label("Parking mode:");
 		parkingModeLabel.setTextFill(settingsTitleColor);
 		parkingModeLabel.setFont(settingsTitleFont);
-		Text parkingModeInfo = new Text("- measures the distances around the car" + System.lineSeparator()
+		final Text parkingModeInfo = new Text("- measures the distances around the car" + System.lineSeparator()
 										+ "- gives a warning incase the distance < door length");
 		parkingModeInfo.setFill(settingsColor);
 		parkingModeInfo.setFont(settingsFont);
@@ -500,36 +500,36 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 //		Settings>settingsTab>currentValues
 		GridPane currentValues = new GridPane();
 		currentValues.setPadding(paddingAllAround);
-		Label currentValuesLabel = new Label("Current values:");
+		final Label currentValuesLabel = new Label("Current values:");
 		currentValuesLabel.setTextFill(settingsTitleColor);
 		currentValuesLabel.setFont(settingsTitleFont);
 		
-		Label door = new Label(DOOR_LENGTH + ": ");
+		final Label door = new Label(DOOR_LENGTH + ": ");
 		door.setTextFill(settingsColor);
 		door.setFont(settingsFont);
 		door.setPadding(topSettingsInsets);
-		Label doorValue = new Label(String.valueOf(carData.getDoorLength()) + "m");
+		final Label doorValue = new Label(String.valueOf(carData.getDoorLength()) + "m");
 		doorValue.setTextFill(settingsColor);
 		doorValue.setFont(settingsFont);
-		Label rearDoor = new Label(REAR_DOOR_LENGTH + ": ");
+		final Label rearDoor = new Label(REAR_DOOR_LENGTH + ": ");
 		rearDoor.setTextFill(settingsColor);
 		rearDoor.setFont(settingsFont);
 		rearDoor.setPadding(settingsInsets);
-		Label rearDoorValue = new Label(String.valueOf(carData.getRearDoorLength()) + "m");
+		final Label rearDoorValue = new Label(String.valueOf(carData.getRearDoorLength()) + "m");
 		rearDoorValue.setTextFill(settingsColor);
 		rearDoorValue.setFont(settingsFont);
-		Label blindZone = new Label(BLIND_ZONE_VALUE + ": ");
+		final Label blindZone = new Label(BLIND_ZONE_VALUE + ": ");
 		blindZone.setTextFill(settingsColor);
 		blindZone.setFont(settingsFont);
 		blindZone.setPadding(settingsInsets);
-		Label blindZoneValue = new Label(String.valueOf(carData.getBlindZoneValue()) + "m");
+		final Label blindZoneValue = new Label(String.valueOf(carData.getBlindZoneValue()) + "m");
 		blindZoneValue.setTextFill(settingsColor);
 		blindZoneValue.setFont(settingsFont);
-		Label frontParkDist = new Label(FRONT_PARK_DISTANCE + ": ");
+		final Label frontParkDist = new Label(FRONT_PARK_DISTANCE + ": ");
 		frontParkDist.setTextFill(settingsColor);
 		frontParkDist.setFont(settingsFont);
 		frontParkDist.setPadding(settingsInsets);
-		Label frontParkDistValue = new Label(String.valueOf(carData.getFrontDistParking()) + "m");
+		final Label frontParkDistValue = new Label(String.valueOf(carData.getFrontDistParking()) + "m");
 		frontParkDistValue.setTextFill(settingsColor);
 		frontParkDistValue.setFont(settingsFont);
 		
@@ -549,11 +549,11 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 //		Settings>settingTab>updateFields
 		VBox updateFields = new VBox();
 		updateFields.setPadding(paddingAllAround);
-		Label updateLabel = new Label("Set new value:");
+		final Label updateLabel = new Label("Set new value:");
 		updateLabel.setTextFill(settingsTitleColor);
 		updateLabel.setFont(settingsTitleFont);
 
-		TextField doorLengthField = new TextField();
+		final TextField doorLengthField = new TextField();
 		doorLengthField.setPromptText("meter");
 		doorLengthField.setMaxWidth(180);
 		doorLengthField.setOnAction(new EventHandler<ActionEvent>() {
@@ -563,7 +563,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 			}
 		});
 		
-		TextField rearDoorLengthField = new TextField();
+		final TextField rearDoorLengthField = new TextField();
 		rearDoorLengthField.setPromptText("meter");
 		rearDoorLengthField.setMaxWidth(180);
 		rearDoorLengthField.setOnAction(new EventHandler<ActionEvent>() {
@@ -573,7 +573,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 			}
 		});
 		
-		TextField blindZoneValueField = new TextField();
+		final TextField blindZoneValueField = new TextField();
 		blindZoneValueField.setMaxWidth(180);
 		blindZoneValueField.setPromptText("meter");
 		blindZoneValueField.setOnAction(new EventHandler<ActionEvent>() {
@@ -583,7 +583,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 			}
 		});
 		
-		TextField frontParkDistField = new TextField();
+		final TextField frontParkDistField = new TextField();
 		frontParkDistField.setMaxWidth(180);
 		frontParkDistField.setPromptText("meter");
 		frontParkDistField.setOnAction(new EventHandler<ActionEvent>() {
@@ -602,7 +602,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 		Separator settingsSeparator = new Separator();
 		settingsSeparator.setPadding(separatorInsets);
 		
-		Text howToSave = new Text("Enter new values into the textfields and click [enter]" + System.lineSeparator() + "to update current values.");
+		final Text howToSave = new Text("Enter new values into the textfields and click [enter]" + System.lineSeparator() + "to update current values.");
 		howToSave.setFill(settingsColor);
 		howToSave.setFont(settingsFont);
 		
@@ -623,16 +623,16 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 		
 //		Settings>simulation>updateFields
 		GridPane valuesSimulation = new GridPane();
-		Label valuesSimLabel = new Label("Simulation values:");
+		final Label valuesSimLabel = new Label("Simulation values:");
 		valuesSimLabel.setTextFill(settingsTitleColor);
 		valuesSimLabel.setFont(settingsTitleFont);
 		
-		Label currentSpeed = new Label(CAR_SPEED + ": ");
+		final Label currentSpeed = new Label(CAR_SPEED + ": ");
 		currentSpeed.setTextFill(settingsColor);
 		currentSpeed.setFont(settingsFont);
 		currentSpeed.setPadding(topSettingsInsets);
 
-		TextField currentSpeedField = new TextField();
+		final TextField currentSpeedField = new TextField();
 		currentSpeedField.setMaxWidth(180);
 		currentSpeedField.setPromptText("km/h");
 		currentSpeedField.setOnAction(new EventHandler<ActionEvent>() {
@@ -651,7 +651,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 		Separator simulationSeparator = new Separator();
 		simulationSeparator.setPadding(separatorInsets);
 		
-		Text simulateInfo = new Text("Settings for simulate data." + System.lineSeparator() + "Enter new values into the textfields and click [enter]");
+		final Text simulateInfo = new Text("Settings for simulate data." + System.lineSeparator() + "Enter new values into the textfields and click [enter]");
 		simulateInfo.setFill(settingsColor);
 		simulateInfo.setFont(settingsFont);
 		
@@ -659,7 +659,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 		simulationSeparator2.setPadding(separatorInsets);
 		
 		ToggleGroup turnlights = new ToggleGroup();
-		RadioButton leftTurnLight = new RadioButton(LEFT_TURN_LIGHT);
+		final RadioButton leftTurnLight = new RadioButton(LEFT_TURN_LIGHT);
 		leftTurnLight.setToggleGroup(turnlights);
 		leftTurnLight.setTextFill(settingsColor);
 		leftTurnLight.setFont(settingsFont);
@@ -674,7 +674,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 			}
 		});
 		
-		RadioButton rightTurnLight = new RadioButton(RIGHT_TURN_LIGHT);
+		final RadioButton rightTurnLight = new RadioButton(RIGHT_TURN_LIGHT);
 		rightTurnLight.setToggleGroup(turnlights);
 		rightTurnLight.setTextFill(settingsColor);
 		rightTurnLight.setFont(settingsFont);
@@ -689,7 +689,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 			}
 		});
 		
-		RadioButton noTurnLight = new RadioButton("No turn light");
+		final RadioButton noTurnLight = new RadioButton("No turn light");
 		noTurnLight.setToggleGroup(turnlights);
 		noTurnLight.setTextFill(settingsColor);
 		noTurnLight.setFont(settingsFont);
@@ -720,7 +720,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 		weatherContent.setPrefSize(tabWidth, tabHeight);
 		weatherContent.setPadding(paddingAllAround);
 		
-		Label weather = new Label(WEATHER);
+		final Label weather = new Label(WEATHER);
 		weather.setTextFill(settingsTitleColor);
 		weather.setFont(settingsTitleFont);
 		weather.setPadding(topSettingsInsets);
@@ -732,7 +732,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 		weatherChoices.setPadding(paddingAllAround);
 		ToggleGroup weatherOptions = new ToggleGroup();
 
-		RadioButton dryAsphalt = new RadioButton(DRY_ASPHALT);
+		final RadioButton dryAsphalt = new RadioButton(DRY_ASPHALT);
 		dryAsphalt.setToggleGroup(weatherOptions);
 		dryAsphalt.setTextFill(settingsColor);
 		dryAsphalt.setFont(settingsFont);
@@ -744,7 +744,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 			}
 		});
 		
-		RadioButton wetAsphalt = new RadioButton(WET_ASPHALT);
+		final RadioButton wetAsphalt = new RadioButton(WET_ASPHALT);
 		wetAsphalt.setToggleGroup(weatherOptions);
 		wetAsphalt.setTextFill(settingsColor);
 		wetAsphalt.setFont(settingsFont);
@@ -756,7 +756,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 			}
 		});
 		
-		RadioButton snow = new RadioButton(SNOW);
+		final RadioButton snow = new RadioButton(SNOW);
 		snow.setToggleGroup(weatherOptions);
 		snow.setTextFill(settingsColor);
 		snow.setFont(settingsFont);
@@ -768,7 +768,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 			}
 		});
 		
-		RadioButton ice = new RadioButton(ICE);
+		final RadioButton ice = new RadioButton(ICE);
 		ice.setToggleGroup(weatherOptions);
 		ice.setTextFill(settingsColor);
 		ice.setFont(settingsFont);
@@ -793,7 +793,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 		extraFeaturesContent.setPrefSize(tabWidth, tabHeight);
 		extraFeaturesContent.setPadding(paddingAllAround);
 		
-		Label extraFeaturesLabel = new Label("Extra features");
+		final Label extraFeaturesLabel = new Label("Extra features");
 		extraFeaturesLabel.setTextFill(settingsTitleColor);
 		extraFeaturesLabel.setFont(settingsTitleFont);
 		extraFeaturesLabel.setPadding(topSettingsInsets);
@@ -801,7 +801,7 @@ public class Proxim8Program_wo_lambda2 extends Application implements BaseInterf
 		Separator separatorExtraFeatures = new Separator();
 		separatorExtraFeatures.setPadding(separatorInsets);
 		
-		CheckBox blindspotAlways = new CheckBox("Blindspot always");
+		final CheckBox blindspotAlways = new CheckBox("Blindspot always");
 		blindspotAlways.setSelected(blindspotAlwaysActivated);
 		blindspotAlways.setFont(settingsFont);
 		blindspotAlways.setTextFill(settingsColor);
