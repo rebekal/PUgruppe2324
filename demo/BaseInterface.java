@@ -16,7 +16,7 @@ public interface BaseInterface {
 	
 //	Car
 	final String DOOR_LENGTH = "Door", REAR_DOOR_LENGTH = "Rear door", BLIND_ZONE_VALUE = "Blind zone";
-	final String CURRENT_SPEED = "Current speed", FRONT_PARK_DISTANCE = "Front park distance";
+	final String CAR_SPEED = "Car speed", FRONT_PARK_DISTANCE = "Front park distance";
 	final String LEFT_TURN_LIGHT = "Left turn light", RIGHT_TURN_LIGHT = "Right turn light";
 	
 //	User
